@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="scanPeriod">
+        <item> 10분 </item>
+        <item> 20분 </item>
+        <item> 30분 </item>
+        <item> 1시간 </item>
+        <item> 3시간 </item>
+        <item> 10시간 </item>
+        <item> 24시간 </item>
+    </string-array>
+
+    <string-array name="signalStrength">
+        <item> 5m </item>
+        <item> 10m </item>
+        <item> 30m </item>
+        <item> 50m </item>
+        <item> 100m </item>
+        <item> 100m 초과 </item>
+    </string-array>
+
+
+</resources>

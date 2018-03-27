@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_myBLE"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="나의 BLE" />
+        <item
+            android:id="@+id/nav_searchBLE"
+            android:icon="@android:drawable/ic_menu_myplaces"
+            android:title="주변 BLE 검색" />
+        <item
+            android:id="@+id/nav_distanceBLE"
+            android:icon="@android:drawable/ic_menu_mylocation"
+            android:title="BLE 거리" />
+        <item
+            android:id="@+id/nav_mapBLE"
+            android:icon="@android:drawable/ic_menu_mapmode"
+            android:title="위치검색" />
+    </group>
+
+    <group >
+        <item android:title="설정">
+            <menu>
+                <item
+                    android:id="@+id/nav_settingBLE"
+                    android:icon="@android:drawable/ic_menu_preferences"
+                    android:title="설정" />
+                <item
+                    android:id="@+id/nav_settingGPS"
+                    android:title="GPS 설정"
+                    app:actionLayout="@layout/switch_item" />
+                <item
+                    android:id="@+id/nav_settingBlue"
+                    android:title="Bluetooth 설정"
+                    app:actionLayout="@layout/switch_item" />
+            </menu>
+        </item>
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/nav_contact"
+            android:icon="@android:drawable/ic_dialog_info"
+            android:title="문의하기"
+            android:visible="true" />
+    </group>
+
+</menu>
