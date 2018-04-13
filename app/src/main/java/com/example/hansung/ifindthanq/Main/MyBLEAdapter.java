@@ -1,4 +1,4 @@
-package com.example.hansung.ifindthanq;
+package com.example.hansung.ifindthanq.Main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.hansung.ifindthanq.BLEDistanceActivity;
+import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
+import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.model.MyBLE;
 
 import java.util.List;
@@ -60,9 +63,11 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
             public void onClick(View v) {
                 Toast.makeText(mContext, myBLE.getBleName() + "을 클릭함", Toast.LENGTH_SHORT).show();
                 if (myBLE.getBleName() == " ") {
+                    //BEL 찾기 Activity
                     Intent intent = new Intent(mContext, BLESearchActivity.class);
                     mContext.startActivity(intent);
                 } else {
+                    // BLE 상세보기 Activity
                     Intent intent = new Intent(mContext, BLEDistanceActivity.class);
                     intent.putExtra("bleName", myBLE.getBleName());
                     intent.putExtra("bleImage", myBLE.getBleImage());

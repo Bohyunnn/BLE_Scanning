@@ -2,15 +2,9 @@ package com.example.hansung.ifindthanq.model;
 
 import android.bluetooth.BluetoothDevice;
 
-/**
- * Created by kimbohyun on 2018-03-15.
- */
-
 /* BLEDevice와 RSSI 저장하는 객체
- *
  * @BluetoothDevice: BLE 장치(name, address)
  * @RSSI: 강도세기
- *
  */
 public class BLE_Device {
 

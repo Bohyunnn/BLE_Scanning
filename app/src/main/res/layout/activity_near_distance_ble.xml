@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/blue_50"
     android:orientation="vertical"
-    tools:context="com.example.hansung.ifindthanq.addBLE.BLESearchActivity">
+    tools:context="com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity">
 
 
     <LinearLayout
@@ -21,9 +21,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="7"
-            android:gravity="center"
-            android:text="등록 가능한 블루투스 검색 목록 입니다."
-            android:textSize="18sp" />
+            android:text="근처 블루투스 검색 목록 입니다."
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/button"

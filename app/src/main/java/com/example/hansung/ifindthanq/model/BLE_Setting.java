@@ -5,10 +5,8 @@ package com.example.hansung.ifindthanq.model;
  */
 
 /* BLEDevice Setting 객체
- *
  * @scanPeriod: 스캔주기
  * @signalStrength: 스캔강도
- *
  */
 
 public class BLE_Setting {

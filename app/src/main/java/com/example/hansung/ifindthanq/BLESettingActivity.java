@@ -6,12 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hansung.ifindthanq.Main.MainActivity;
 import com.example.hansung.ifindthanq.model.BLE_Setting;
 
 //사용자 BLE [검색주기, 거리] 설정
@@ -33,7 +33,7 @@ public class BLESettingActivity extends AppCompatActivity {
 //
 //        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 //        s.setAdapter(adapter);
-//
+//w
 //
 //        ArrayAdapter adapter2 = new ArrayAdapter(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, signalStrength);
 //

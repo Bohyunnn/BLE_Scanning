@@ -8,15 +8,15 @@
         <item
             android:id="@+id/nav_myBLE"
             android:icon="@android:drawable/ic_menu_view"
-            android:title="나의 BLE" />
+            android:title="나의 블루투스" />
+        <item
+            android:id="@+id/nav_addMyBLE"
+            android:icon="@android:drawable/ic_menu_add"
+            android:title="나의 블루투스 추가" />
         <item
             android:id="@+id/nav_searchBLE"
             android:icon="@android:drawable/ic_menu_myplaces"
             android:title="주변 BLE 검색" />
-        <item
-            android:id="@+id/nav_distanceBLE"
-            android:icon="@android:drawable/ic_menu_mylocation"
-            android:title="BLE 거리" />
         <item
             android:id="@+id/nav_mapBLE"
             android:icon="@android:drawable/ic_menu_mapmode"

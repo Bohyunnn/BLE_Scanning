@@ -1,7 +1,9 @@
-package com.example.hansung.ifindthanq;
+package com.example.hansung.ifindthanq.Main;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -19,10 +21,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.hansung.ifindthanq.BLEDistanceActivity;
+import com.example.hansung.ifindthanq.BLEMapActivity;
+import com.example.hansung.ifindthanq.BLESettingActivity;
+import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
+import com.example.hansung.ifindthanq.R;
+import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
 import com.example.hansung.ifindthanq.model.MyBLE;
 
 import java.util.ArrayList;
@@ -32,16 +40,22 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar toolbar;
-    private FrameLayout frameLayout;
+//    private FrameLayout frameLayout;
 
     private RecyclerView recyclerView;
     private MyBLEAdapter myBLEAdapter;
     private List<MyBLE> myBLEList;
 
+    private static final int REQUEST_ENABLE_BT = 123456789;
+    private BluetoothAdapter bluetoothAdapter = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // BluetoothAdapter 인스턴스를 얻는다
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //toolbar 설정
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -80,7 +94,7 @@ public class MainActivity extends AppCompatActivity
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(25), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(myBLEAdapter);
 
@@ -94,18 +108,17 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    //뒤로가기 눌렀을때 DrawerLayout 작동
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    //뒤로가기 눌렀을때 DrawerLayout 작동
+//    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
-    //오른쪽 메뉴 설정 => 필요한가..??
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -113,19 +126,29 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    //오른쪽 메뉴 클릭시 => 필요한가...?
+    //메뉴 옵션
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_bluetooth) {//왼쪽 상단바 bluetooth 클릭시
+            if (bluetoothAdapter == null) {
+                // 단말기는 Bluetooth를 지원하지 않음.
+            } else {
+                //bluetooth 지원하는 경우
+                if (!bluetoothAdapter.isEnabled()) {//블루투스 활성화되지 않은 경우
+                    //블루투스 활성화하기
+                    Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(turnOn, 0);
+                    Toast.makeText(getApplicationContext(), "Bluetooth Turned on", Toast.LENGTH_LONG).show();
+                } else {//블루투스 활성화되어 있는 경우
+                    //블루투스 비활성화하기
+                    bluetoothAdapter.disable();
+                    Toast.makeText(getApplicationContext(), "Bluetooth Turned off", Toast.LENGTH_LONG).show();
+                }
+            }
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -139,11 +162,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_myBLE) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_searchBLE) {
+        } else if (id == R.id.nav_addMyBLE) {
             Intent intent = new Intent(this, BLESearchActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_distanceBLE) {
-            Intent intent = new Intent(this, BLEDistanceActivity.class);
+        } else if (id == R.id.nav_searchBLE) {
+            Intent intent = new Intent(this, NearDistanceBLEActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_mapBLE) {
             Intent intent = new Intent(this, BLEMapActivity.class);
@@ -166,16 +189,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void prepareAlbums() {
-        int[] images = new int[]{
-                R.drawable.plusicon, R.mipmap.ic_launcher, R.mipmap.ic_launcher
-        };
-        MyBLE a = new MyBLE(R.drawable.dogicon, "강아지");
-        myBLEList.add(a);
 
-        a = new MyBLE(R.drawable.headphoneicon, "이어폰");
-        myBLEList.add(a);
 
-        a = new MyBLE(R.drawable.plusicon, " ");
+        //실험용1
+        MyBLE a = new MyBLE(R.drawable.dog,null, "강아지");
+        myBLEList.add(a);
+//
+//        //실험용2
+//        a = new MyBLE(R.drawable.headphoneicon, null, "이어폰");
+//        myBLEList.add(a);
+
+        a = new MyBLE(R.drawable.plusicon, null, " ");
         myBLEList.add(a);
 
         myBLEAdapter.notifyDataSetChanged();

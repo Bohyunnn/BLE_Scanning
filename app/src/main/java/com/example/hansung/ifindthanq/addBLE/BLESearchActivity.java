@@ -1,4 +1,4 @@
-package com.example.hansung.ifindthanq;
+package com.example.hansung.ifindthanq.addBLE;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -8,9 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
+
+import com.example.hansung.ifindthanq.R;
+import com.example.hansung.ifindthanq.model.SearchBLE;
 
 import java.util.ArrayList;
 
@@ -19,22 +22,22 @@ public class BLESearchActivity extends AppCompatActivity {
     BluetoothAdapter mBluetoothAdapter;
     private CustomAdapter adp;
     private Thread t = null;
-
-    public void doTrack(View v) {
-        ArrayList<String> macs = adp.getMacs();
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("macs", macs);
-        startActivity(intent);
-        finish();
-    }
+    private ArrayList<SearchBLE> SearchBLE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blesearch);
 
-        adp = new CustomAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter.startDiscovery();
 
+        SearchBLE = new ArrayList<>();
+
+        adp = new CustomAdapter(SearchBLE);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setAdapter(adp);
+        recyclerView.setLayoutManager(new LinearLayoutManager(BLESearchActivity.this));
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.startDiscovery();
 
@@ -55,9 +58,16 @@ public class BLESearchActivity extends AppCompatActivity {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 adp.setContext(context);
-                adp.addElement(device.getAddress(), device.getName());
-                Log.i("BT", device.getName() + "\n" + device.getAddress());
-                ListView list = (ListView) findViewById(R.id.list);
+                String deviceName;
+                if(device.getName()==null){
+                    deviceName="Unknown Device";
+                } else{
+                    deviceName=device.getName();
+                }
+
+                SearchBLE.add(new SearchBLE(device.getAddress(), deviceName));
+
+                RecyclerView list = (RecyclerView) findViewById(R.id.recyclerView);
                 list.setAdapter(adp);
             }
         }
@@ -67,4 +77,5 @@ public class BLESearchActivity extends AppCompatActivity {
         if (t != null)
             t.interrupt();
     }
+
 }
