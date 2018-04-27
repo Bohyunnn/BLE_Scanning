@@ -1,12 +1,14 @@
 package com.example.hansung.ifindthanq.addBLE;
 
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,12 +17,14 @@ import android.widget.Toast;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.model.SearchBLE;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
 
     private Context mContext;
     private ArrayList<SearchBLE> searchBLES;
+    BLESearchActivity bleSearchActivity;
 
     //Adapter 초기화 및 생성자로 받은 데이터기반으로 Adapter 내 데이터 세팅
     public CustomAdapter(ArrayList<SearchBLE> searchBLES) {
@@ -51,6 +55,18 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         public void onClick(View v) {
             int position = getLayoutPosition(); //Get item position
             Toast.makeText(context, macAddress.getText(), Toast.LENGTH_SHORT).show();
+
+//                BluetoothDevice device = bluetoothDevices.get(position);
+//
+//                try {
+//                    //선택한 디바이스 페어링 요청
+//                    Method method = device.getClass().getMethod("createBond", (Class[]) null);
+//                    method.invoke(device, (Object[]) null);
+//                    selectDevice = position;
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
 
             Intent intent = new Intent(mContext, AddBLEActivity.class);
             intent.putExtra("macs", macAddress.getText());
