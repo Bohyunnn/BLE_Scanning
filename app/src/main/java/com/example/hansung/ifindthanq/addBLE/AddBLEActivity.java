@@ -27,6 +27,8 @@ import com.example.hansung.ifindthanq.Main.MainActivity;
 import com.example.hansung.ifindthanq.Main.MyBLEAdapter;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.model.MyBLE;
+import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
+import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,8 @@ public class AddBLEActivity extends AppCompatActivity {
     private String resultIcon;
 
     private InputMethodManager imm; //키보드 화면터치시 내려가게 설정
+
+    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
 
 
     @SuppressLint("WrongViewCast")
@@ -128,6 +132,10 @@ public class AddBLEActivity extends AppCompatActivity {
 
         System.out.print("[img] " + bt +"[resultIcon] " + resultIcon +", [Mac주소] " + macs + ", [등록할 bleName] " + name);
         Toast.makeText(this, "[img] " + bt +"[resultIcon] " + resultIcon +"[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
+
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(getBaseContext());
+        //ProblemConfigurationVo problem=new ProblemConfigurationVo(seq, type, bt, resultIcon, macs,  bleName);
+       // mSQLiteDBHelperDao.addConfiguration(mCount , problem); //ArrayList 데이터 추가
 
         startActivity(intent);
 

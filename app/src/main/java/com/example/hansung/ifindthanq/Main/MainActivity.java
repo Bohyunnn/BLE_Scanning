@@ -3,7 +3,6 @@ package com.example.hansung.ifindthanq.Main;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -25,13 +24,13 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.hansung.ifindthanq.BLEDistanceActivity;
-import com.example.hansung.ifindthanq.BLEMapActivity;
+import com.example.hansung.ifindthanq.mapBLE.BLEMapActivity;
 import com.example.hansung.ifindthanq.BLESettingActivity;
 import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
 import com.example.hansung.ifindthanq.model.MyBLE;
+import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +47,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final int REQUEST_ENABLE_BT = 123456789;
     private BluetoothAdapter bluetoothAdapter = null;
+
+    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,6 +191,9 @@ public class MainActivity extends AppCompatActivity
 
     private void prepareAlbums() {
 
+//        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
+//
+//        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
 
         //실험용1
         MyBLE a = new MyBLE(R.drawable.dog,null, "강아지");

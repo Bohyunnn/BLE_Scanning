@@ -2,25 +2,32 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hansung.ifindthanq">
 
-    <!--&lt;!&ndash; 구글 지도 권한 체크&ndash;&gt;-->
-    <!--<permission-->
-    <!--android:name="com.example.hansung.ifindthanq.googlemap.locationapi.maps.permission.MAPS_RECEIVE"-->
-    <!--android:protectionLevel="signature" />-->
+    <!-- &lt;!&ndash; 구글 지도 권한 체크&ndash;&gt; -->
+    <!-- <permission -->
+    <!-- android:name="com.example.hansung.ifindthanq.googlemap.locationapi.maps.permission.MAPS_RECEIVE" -->
+    <!-- android:protectionLevel="signature" /> -->
 
-    <!--<uses-permission android:name="com.example.hansung.ifindthanq.googlemap.locationapi.maps.permission.MAPS_RECEIVE" />-->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
 
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <!-- <uses-permission android:name="com.example.hansung.ifindthanq.googlemap.locationapi.maps.permission.MAPS_RECEIVE" /> -->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
 
-    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
 
-    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
 
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>-->
 
-    <!--<uses-feature-->
-    <!--android:glEsVersion="0x00020000"-->
-    <!--android:required="true" />-->
+    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+
+
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+
+
+    <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> -->
+
+
+    <!-- <uses-feature -->
+    <!-- android:glEsVersion="0x00020000" -->
+    <!-- android:required="true" /> -->
+
 
     <!-- 사진 권한 체크 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -31,10 +38,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <!--<meta-data-->
-    <!--android:name="com.google.android.maps.v2.API_KEY"-->
-    <!--android:value="AIzaSyB_rVrJ-FqyCApDypuy5G8Fukn-2_63rfs" />-->
-
+    <!-- <meta-data -->
+    <!-- android:name="com.google.android.maps.v2.API_KEY" -->
+    <!-- android:value="AIzaSyB_rVrJ-FqyCApDypuy5G8Fukn-2_63rfs" /> -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -49,13 +55,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- API 값 바꾸기! -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDO0h2SUUufEoaCrQH6j9fQ5Y5C1zlUTBo" />
+
         <activity
             android:name=".Main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".addBLE.BLESearchActivity" />
         <activity android:name=".BLEDistanceActivity" />
-        <activity android:name=".BLEMapActivity" />
+        <activity android:name=".mapBLE.BLEMapActivity" />
         <activity android:name=".BLESettingActivity" />
         <activity android:name=".RSSIActivity" />
         <activity
@@ -67,7 +78,7 @@
         <activity
             android:name=".addBLE.ADDBLEImageIconSearchPOP"
             android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".nearBLE.NearDistanceBLEActivity"></activity>
+        <activity android:name=".nearBLE.NearDistanceBLEActivity" />
     </application>
 
 </manifest>
