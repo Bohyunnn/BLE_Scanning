@@ -69,7 +69,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         return contact;
     }
 
-    public ArrayList<ProblemConfigurationVo> getConfigurationsAll(String table) {
+    public ArrayList<ProblemConfigurationVo> getConfigurationsAll() {
         ArrayList<ProblemConfigurationVo> contactList = new ArrayList<ProblemConfigurationVo>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_BLE;
@@ -97,13 +97,13 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     }
 
 
-    public void addConfiguration(int type, ProblemConfigurationVo problemConfigurationVo) {
+    public void addConfiguration(ProblemConfigurationVo problemConfigurationVo) {
         SQLiteDatabase db = this.getReadableDatabase();
-        addConfiguration(type, db, problemConfigurationVo);
+        addConfiguration(db, problemConfigurationVo);
         db.close(); // Closing database connection
     }
 
-    public void addConfiguration(int type, SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
+    public void addConfiguration( SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
         ContentValues values = new ContentValues();
 
         values.put(KEY_TYPE, problemConfigurationVo.getType());

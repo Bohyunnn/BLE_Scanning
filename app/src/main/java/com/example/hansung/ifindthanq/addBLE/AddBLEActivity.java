@@ -46,8 +46,9 @@ public class AddBLEActivity extends AppCompatActivity {
 
     private InputMethodManager imm; //키보드 화면터치시 내려가게 설정
 
-    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
-
+    private ProblemConfigurationVo problemConfigurationVo;
+    private SQLiteDBHelperDao mSqLiteDBHelperDao = null;
+    ProblemConfigurationVo problemConfigurationVoThree = new ProblemConfigurationVo(); // DTO클래스
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -130,21 +131,44 @@ public class AddBLEActivity extends AppCompatActivity {
         String name = bleName.getText().toString(); //edittext에서 받아온 bleName 값을 String으로 변환
         intent.putExtra("bleName", "" + name);
 
-        System.out.print("[img] " + bt +"[resultIcon] " + resultIcon +", [Mac주소] " + macs + ", [등록할 bleName] " + name);
-        Toast.makeText(this, "[img] " + bt +"[resultIcon] " + resultIcon +"[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
+        System.out.print("[img] " + bt + "[resultIcon] " + resultIcon + ", [Mac주소] " + macs + ", [등록할 bleName] " + name);
+        Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
 
-        mSQLiteDBHelperDao = new SQLiteDBHelperDao(getBaseContext());
-        //ProblemConfigurationVo problem=new ProblemConfigurationVo(seq, type, bt, resultIcon, macs,  bleName);
-       // mSQLiteDBHelperDao.addConfiguration(mCount , problem); //ArrayList 데이터 추가
+        System.out.print("//////////////"+bt);
+//        if (bt != null) {
+//            //앨범일때
+//            problemConfigurationVo.setType("A");
+//            problemConfigurationVo.setAlbumImage("여기에 앨범이미지 경로 넣고 불러쓰면돼");
+//            problemConfigurationVo.setBleName(name);
+//            problemConfigurationVo.setMacs(macs);
+//        } else if (resultIcon != null) {
+            //drawble일때
+            problemConfigurationVo.setType("I");
 
+            if (resultIcon.equals("1")) {
+                problemConfigurationVo.setBleImage(R.drawable.dogicon);
+            } else if (resultIcon.equals("2")) {
+                problemConfigurationVo.setBleImage(R.drawable.headphoneicon);
+            } else if (resultIcon.equals("3")) {
+                problemConfigurationVo.setBleImage(R.drawable.bluetoothicon);
+            } else if (resultIcon.equals("4")) {
+                problemConfigurationVo.setBleImage(R.drawable.passport);
+            }
+
+            problemConfigurationVo.setBleName(name);
+            problemConfigurationVo.setMacs(macs);
+//        }
+        mSqLiteDBHelperDao.addConfiguration(problemConfigurationVoThree);
         startActivity(intent);
+    }
 
-        //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
+
+    //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
 //        List<MyBLE> myBLEList = null;
 //        myBLEList.add(0,new MyBLE(1, "" + macs, "실험용"));
 //        MyBLEAdapter myBLEAdapter = null;
 //        myBLEAdapter.notifyItemInserted(0);
-    }
+
 
     //키보드- 바탕화면 클릭시 내려가게 설정
     public void linearOnClick(View view) {

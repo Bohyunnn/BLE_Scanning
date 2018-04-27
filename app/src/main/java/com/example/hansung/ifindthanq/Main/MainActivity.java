@@ -30,6 +30,7 @@ import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
 import com.example.hansung.ifindthanq.model.MyBLE;
+import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
 import java.util.ArrayList;
@@ -48,12 +49,16 @@ public class MainActivity extends AppCompatActivity
     private static final int REQUEST_ENABLE_BT = 123456789;
     private BluetoothAdapter bluetoothAdapter = null;
 
-    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
+    private SQLiteDBHelperDao mSqLiteDBHelperDao = null;
+    private ArrayList<ProblemConfigurationVo> mArrayList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSqLiteDBHelperDao = new SQLiteDBHelperDao(this); // 객체선언시 , 로컬 DB생성
+        mArrayList = new ArrayList<ProblemConfigurationVo>();
 
         // BluetoothAdapter 인스턴스를 얻는다
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -86,7 +91,6 @@ public class MainActivity extends AppCompatActivity
         //NavigationView 설정
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
@@ -191,9 +195,10 @@ public class MainActivity extends AppCompatActivity
 
     private void prepareAlbums() {
 
-//        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
-//
-//        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
+        //리스트뷰가 있다가정하에 데이터불러오기
+        ProblemConfigurationVo problemConfigurationVo = new ProblemConfigurationVo(); // DTO클래스
+        mArrayList.addAll(mSqLiteDBHelperDao.getConfigurationsAll()); // 데이터 를 다불러와서 ArrayList에 저장
+        //어레이 리스트는 데이터를 가지고 있기 때문에 어뎁터 노티 체인지로 변경
 
         //실험용1
         MyBLE a = new MyBLE(R.drawable.dog,null, "강아지");

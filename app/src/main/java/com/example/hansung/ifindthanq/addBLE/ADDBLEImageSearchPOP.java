@@ -110,6 +110,7 @@ public class ADDBLEImageSearchPOP extends Activity {
                     if ("com.google.android.apps.photos.contentprovider".equals(returnImg.getAuthority())) {
                         for (int i = 0; i < returnImg.getPathSegments().size(); i++) {
                             String temp = returnImg.getPathSegments().get(i);
+                            System.out.print("//////////이미지 값>>>> "+temp);
                             if (temp.startsWith("content://")) {
                                 returnImg = Uri.parse(temp);
                                 break;
