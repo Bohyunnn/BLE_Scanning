@@ -46,8 +46,11 @@ public class BLESearchActivity extends AppCompatActivity {
     TextView txtState;
     Button btnSearch;
     CheckBox chkFindme;
-    ListView listPaired;
-    RecyclerView recyclerView;
+
+    //    ListView listPaired;
+    RecyclerView rvListPaired;
+
+    ListView listDevice;
 
     //Adapter
     SimpleAdapter adapterPaired;
@@ -68,28 +71,32 @@ public class BLESearchActivity extends AppCompatActivity {
         txtState = (TextView) findViewById(R.id.txtState);
         chkFindme = (CheckBox) findViewById(R.id.chkFindme);
         btnSearch = (Button) findViewById(R.id.btnSearch);
-        listPaired = (ListView) findViewById(R.id.listPaired);
 
-        //        listDevice = (ListView)findViewById(R.id.listDevice);
+        //listPaired = (ListView) findViewById(R.id.listPaired);
+        // rvListPaired = (RecyclerView) findViewById(R.id.listPaired);
+
+        listDevice = (ListView) findViewById(R.id.listDevice);
         SearchBLE = new ArrayList<>();
 
-        adp = new CustomAdapter(SearchBLE);
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        recyclerView.setAdapter(adp);
-        recyclerView.setLayoutManager(new LinearLayoutManager(BLESearchActivity.this));
+        adp = new CustomAdapter(this,SearchBLE);
+        rvListPaired = (RecyclerView) findViewById(R.id.listPaired);
+        rvListPaired.setAdapter(adp);
+        rvListPaired.setLayoutManager(new LinearLayoutManager(BLESearchActivity.this));
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.startDiscovery();
 
         //-------------------
 
         //Adapter1
-        dataPaired = new ArrayList<>();
-        adapterPaired = new SimpleAdapter(this, dataPaired, android.R.layout.simple_list_item_2, new String[]{"name", "address"}, new int[]{android.R.id.text1, android.R.id.text2});
-        listPaired.setAdapter(adapterPaired);
+//        dataPaired = new ArrayList<>();
+//        adapterPaired = new SimpleAdapter(this, dataPaired, android.R.layout.simple_list_item_2, new String[]{"name", "address"}, new int[]{android.R.id.text1, android.R.id.text2});
+//        listPaired.setAdapter(adapterPaired);
+
         //Adapter2
         dataDevice = new ArrayList<>();
         adapterDevice = new SimpleAdapter(this, dataDevice, android.R.layout.simple_list_item_2, new String[]{"name", "address"}, new int[]{android.R.id.text1, android.R.id.text2});
-        //listDevice.setAdapter(adp);
+        listDevice.setAdapter(adapterDevice);
 
         //검색된 블루투스 디바이스 데이터
         bluetoothDevices = new ArrayList<>();
@@ -138,21 +145,21 @@ public class BLESearchActivity extends AppCompatActivity {
 
 
         //검색된 디바이스목록 클릭시 페어링 요청
-//        recyclerView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                BluetoothDevice device = bluetoothDevices.get(position);
-//
-//                try {
-//                    //선택한 디바이스 페어링 요청
-//                    Method method = device.getClass().getMethod("createBond", (Class[]) null);
-//                    method.invoke(device, (Object[]) null);
-//                    selectDevice = position;
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        listDevice.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                BluetoothDevice device = bluetoothDevices.get(position);
+
+                try {
+                    //선택한 디바이스 페어링 요청
+                    Method method = device.getClass().getMethod("createBond", (Class[]) null);
+                    method.invoke(device, (Object[]) null);
+                    selectDevice = position;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     //블루투스 상태변화 BroadcastReceiver
@@ -199,24 +206,30 @@ public class BLESearchActivity extends AppCompatActivity {
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
 
-                    adp.setContext(context);
+//                    adp.setContext(context);
+//                    String deviceName;
+//                    if (device.getName() == null) {
+//                        deviceName = "Unknown Device";
+//                    } else {
+//                        deviceName = device.getName();
+//                    }
+//
+//                    SearchBLE.add(new SearchBLE(device.getAddress(), deviceName));
+//
+//                    RecyclerView list = (RecyclerView) findViewById(R.id.recyclerView);
+//                    list.setAdapter(adp);
+
+                    //데이터 저장
+                    Map map = new HashMap();
                     String deviceName;
                     if (device.getName() == null) {
                         deviceName = "Unknown Device";
                     } else {
                         deviceName = device.getName();
                     }
-
-                    SearchBLE.add(new SearchBLE(device.getAddress(), deviceName));
-
-                    RecyclerView list = (RecyclerView) findViewById(R.id.recyclerView);
-                    list.setAdapter(adp);
-
-                    //데이터 저장
-//                    Map map = new HashMap();
-//                    map.put("name", device.getName()); //device.getName() : 블루투스 디바이스의 이름
-//                    map.put("address", device.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
-//                    dataDevice.add(map);
+                    map.put("name", deviceName); //device.getName() : 블루투스 디바이스의 이름
+                    map.put("address", device.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
+                    dataDevice.add(map);
 
                     //리스트 목록갱신
                     adapterDevice.notifyDataSetChanged();
@@ -233,12 +246,26 @@ public class BLESearchActivity extends AppCompatActivity {
                     BluetoothDevice paired = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     if (paired.getBondState() == BluetoothDevice.BOND_BONDED) {
                         //데이터 저장
-                        Map map2 = new HashMap();
-                        map2.put("name", paired.getName()); //device.getName() : 블루투스 디바이스의 이름
-                        map2.put("address", paired.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
-                        dataPaired.add(map2);
-                        //리스트 목록갱신
-                        adapterPaired.notifyDataSetChanged();
+                        adp.setContext(context);
+
+                        if (paired.getName() == null) {
+                            deviceName = "Unknown Device";
+                        } else {
+                            deviceName = paired.getName();
+                        }
+
+                        SearchBLE.add(new SearchBLE(paired.getAddress(), deviceName));
+
+                        RecyclerView list = (RecyclerView) findViewById(R.id.listPaired);
+                        list.setAdapter(adp);
+
+
+//                        Map map2 = new HashMap();
+//                        map2.put("name", paired.getName()); //device.getName() : 블루투스 디바이스의 이름
+//                        map2.put("address", paired.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
+//                        dataPaired.add(map2);
+//                        //리스트 목록갱신
+//                        adapterPaired.notifyDataSetChanged();
 
                         //검색된 목록
                         if (selectDevice != -1) {
@@ -308,19 +335,38 @@ public class BLESearchActivity extends AppCompatActivity {
     public void GetListPairedDevice() {
         Set<BluetoothDevice> pairedDevice = mBluetoothAdapter.getBondedDevices();
 
-        dataPaired.clear();
+
+        SearchBLE.clear();
         if (pairedDevice.size() > 0) {
             for (BluetoothDevice device : pairedDevice) {
-                //데이터 저장
-                Map map = new HashMap();
-                map.put("name", device.getName()); //device.getName() : 블루투스 디바이스의 이름
-                map.put("address", device.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
-                dataPaired.add(map);
+                String deviceName;
+                if (device.getName() == null) {
+                    deviceName = "Unknown Device";
+                } else {
+                    deviceName = device.getName();
+                }
+
+                SearchBLE.add(new SearchBLE(device.getAddress(), deviceName));
             }
         }
-        //리스트 목록갱신
-        adapterPaired.notifyDataSetChanged();
+
+        RecyclerView list = (RecyclerView) findViewById(R.id.listPaired);
+        list.setAdapter(adp);
+        adp.notifyDataSetChanged();
     }
+//                dataPaired.clear();
+//                if (pairedDevice.size() > 0) {
+//                    for (BluetoothDevice device : pairedDevice) {
+//                        //데이터 저장
+//                        Map map = new HashMap();
+//                        map.put("name", device.getName()); //device.getName() : 블루투스 디바이스의 이름
+//                        map.put("address", device.getAddress()); //device.getAddress() : 블루투스 디바이스의 MAC 주소
+//                        dataPaired.add(map);
+//                    }
+//                }
+//                //리스트 목록갱신
+//                adapterPaired.notifyDataSetChanged();
+//            }
 
 
     @Override

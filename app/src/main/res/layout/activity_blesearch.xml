@@ -81,18 +81,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ListView
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listPaired"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 
     <TextView
         android:text="검색된 목록"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <ListView
+        android:id="@+id/listDevice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
