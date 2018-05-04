@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_50"
+    android:background="@color/deep_purple_50"
     android:orientation="vertical"
     tools:context="com.example.hansung.ifindthanq.addBLE.BLESearchActivity">
 
@@ -24,11 +24,6 @@
             android:gravity="center"
             android:text="등록 가능한 블루투스 검색 목록 입니다."
             android:textSize="18sp" />
-        <TextView
-            android:id="@+id/txtState"
-            android:textSize="34dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,7 +39,7 @@
                 android:layout_gravity="left|center_vertical"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
-                android:background="@color/blue_900"
+                android:background="@color/toobar_purple"
                 android:onClick="mOnBluetoothSearch"
                 android:text="검색시작"
                 android:textAlignment="center"
@@ -54,6 +49,14 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/txtState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/red_A700"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -76,27 +79,62 @@
             android:textSize="15dp" />
     </LinearLayout>
 
-    <TextView
-        android:text="페어링된 목록"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <View
+            android:id="@+id/view10"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/toobar_purple" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/listPaired"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="페어링된 목록" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listPaired"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
 
+        <View
+            android:id="@+id/view7"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/toobar_purple" />
 
-    <TextView
-        android:text="검색된 목록"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="검색된 목록(페어링 후 등록해주시기 바랍니다)" />
 
-    <ListView
-        android:id="@+id/listDevice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="클릭시 페어링 등록됩니다."
+            android:textSize="10sp" />
+
+        <ListView
+            android:id="@+id/listDevice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
 
 
 </LinearLayout>

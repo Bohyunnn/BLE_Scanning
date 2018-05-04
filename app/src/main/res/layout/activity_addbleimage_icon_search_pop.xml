@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="53dp"
-            android:background="@color/light_blue_900"
+            android:background="@color/toobar_purple"
             android:gravity="center"
             android:text="아이콘으로 설정"
             android:textColor="@color/white"

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -54,6 +55,8 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -152,11 +155,13 @@ public class AddBLEActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-        //백버튼 눌렀을때 시작 페이지로 이동
-        Intent intent = new Intent(this, MainActivity.class);
-        this.finish();
-        startActivity(intent);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: { //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

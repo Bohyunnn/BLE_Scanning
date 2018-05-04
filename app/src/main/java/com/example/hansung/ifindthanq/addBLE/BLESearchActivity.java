@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.model.SearchBLE;
@@ -67,6 +69,9 @@ public class BLESearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blesearch);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         //UI
         txtState = (TextView) findViewById(R.id.txtState);
         chkFindme = (CheckBox) findViewById(R.id.chkFindme);
@@ -78,10 +83,10 @@ public class BLESearchActivity extends AppCompatActivity {
         listDevice = (ListView) findViewById(R.id.listDevice);
         SearchBLE = new ArrayList<>();
 
-        adp = new CustomAdapter(this,SearchBLE);
+        adp = new CustomAdapter(this, SearchBLE);
         rvListPaired = (RecyclerView) findViewById(R.id.listPaired);
         rvListPaired.setAdapter(adp);
-        rvListPaired.setLayoutManager(new LinearLayoutManager(BLESearchActivity.this));
+        rvListPaired.setLayoutManager(new LinearLayoutManager(BLESearchActivity.this,LinearLayoutManager.HORIZONTAL,false));
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.startDiscovery();
@@ -394,5 +399,17 @@ public class BLESearchActivity extends AppCompatActivity {
         unregisterReceiver(mBluetoothScanmodeReceiver);
         super.onDestroy();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: { //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
 

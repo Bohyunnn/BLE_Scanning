@@ -23,6 +23,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -140,7 +141,7 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
             //위도 경도
             mLatitude = location.getLatitude();   //위도
             mLongitude = location.getLongitude(); //경도
-          System.out.print(">>>>"+mLatitude+"///"+mLongitude);
+            System.out.print(">>>>" + mLatitude + "///" + mLongitude);
 
             //맵생성
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -182,7 +183,7 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
         LatLng position = new LatLng(mLatitude, mLongitude);
 
         //화면중앙의 위치와 카메라 줌비율
-        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 16));
+        this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 18));
 
         //지도 보여주기
         boxMap.setVisibility(View.VISIBLE);
@@ -197,7 +198,7 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
 
         View marker = ((LayoutInflater) getApplicationContext().getSystemService(getApplication().LAYOUT_INFLATER_SERVICE)).inflate(R.layout.offble_marker_layout, null);
 
-        String locationName=getAddress(getApplicationContext(),mLatitude, mLongitude);
+        String locationName = getAddress(getApplicationContext(), mLatitude, mLongitude);
         //나의위치 마커
         MarkerOptions mymarker = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(this, marker)))
@@ -257,12 +258,13 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
 
     /**
      * 위도,경도로 주소구하기
+     *
      * @param lat
      * @param lng
      * @return 주소
      */
-    public static String getAddress(Context mContext,double lat, double lng) {
-        String nowAddress ="현재 위치를 확인 할 수 없습니다.";
+    public static String getAddress(Context mContext, double lat, double lng) {
+        String nowAddress = "현재 위치를 확인 할 수 없습니다.";
         Geocoder geocoder = new Geocoder(mContext, Locale.KOREA);
         List<Address> address;
         try {
@@ -274,7 +276,7 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
                 if (address != null && address.size() > 0) {
                     // 주소 받아오기
                     String currentLocationAddress = address.get(0).getAddressLine(0).toString();
-                    nowAddress  = currentLocationAddress;
+                    nowAddress = currentLocationAddress;
 
                 }
             }
@@ -287,5 +289,15 @@ public class BLEMapActivity extends FragmentActivity implements OnMapReadyCallba
         return nowAddress;
     }
 
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home: { //toolbar의 back키 눌렀을 때 동작
+//                finish();
+//                return true;
+//            }
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
 }

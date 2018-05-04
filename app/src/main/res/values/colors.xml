@@ -19,8 +19,9 @@
     <color name="red_A100">#FF8A80</color>
     <color name="red_A200">#FF5252</color>
     <color name="red_A400">#FF1744</color>
-    <color name="red_A700">#D50000</color>
+    <color name="red_A700">#d50000</color>
 
+    <color name="toobar_purple">#6a0080</color>
     <color name="deep_purple_50">#ede7f6</color>
     <color name="deep_purple_100">#d1c4e9</color>
     <color name="deep_purple_200">#b39ddb</color>

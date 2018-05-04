@@ -1,6 +1,8 @@
 package com.example.hansung.ifindthanq;
 
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -21,6 +23,7 @@ public class BLEDistanceActivity extends AppCompatActivity {
 
         int bleImage = intent.getIntExtra("bleImage", 1);
         ImageView imageView = (ImageView) findViewById(R.id.imageView);
+
         imageView.setImageResource(bleImage);
     }
 }
