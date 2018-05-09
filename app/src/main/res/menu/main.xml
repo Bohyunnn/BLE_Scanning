@@ -2,10 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_noNotification"
+        android:icon="@android:drawable/ic_lock_silent_mode"
+        android:title="@string/action_noNotification"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_notification"
+        android:icon="@android:drawable/ic_popup_reminder"
+        android:title="@string/action_notification"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_bluetooth"
         android:icon="@android:drawable/stat_sys_data_bluetooth"
         android:title="@string/action_bluetooth"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <!--<item-->
         <!--android:id="@+id/action_settings"-->

@@ -8,5 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <!--블루투스 오른쪽 상단 메인 메뉴 -->
+    <string name="action_noNotification">noNotification</string>
+    <string name="action_notification">Notification</string>
     <string name="action_bluetooth">Bluetooth</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -24,12 +24,16 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.hansung.ifindthanq.BluetoothService;
+import com.example.hansung.ifindthanq.MapsActivity;
 import com.example.hansung.ifindthanq.mapBLE.BLEMapActivity;
 import com.example.hansung.ifindthanq.BLESettingActivity;
+import com.example.hansung.ifindthanq.model.MyBLE;
 import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
-import com.example.hansung.ifindthanq.model.MyBLE;
+
+import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
 import java.util.ArrayList;
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerView recyclerView;
     private MyBLEAdapter myBLEAdapter;
-    private List<MyBLE> myBLEList;
+    private List<ProblemConfigurationVo> myBLEList;
 
     private static final int REQUEST_ENABLE_BT = 123456789;
     private BluetoothAdapter bluetoothAdapter = null;
@@ -54,6 +58,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
         // BluetoothAdapter 인스턴스를 얻는다
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -90,7 +96,7 @@ public class MainActivity extends AppCompatActivity
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
-        myBLEList = new ArrayList<>();
+        myBLEList = new ArrayList<ProblemConfigurationVo>();
         myBLEAdapter = new MyBLEAdapter(this, myBLEList);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, 3);
@@ -149,7 +155,18 @@ public class MainActivity extends AppCompatActivity
                 }
             }
             return true;
+        } else if (id == R.id.action_notification) {
+            Toast.makeText(getApplicationContext(), "notification Service 실행", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(MainActivity.this, BluetoothService.class);
+            startService(intent);
+            return true;
+        } else if (id == R.id.action_noNotification) {
+            Toast.makeText(getApplicationContext(), "notification Service 중지", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(MainActivity.this, BluetoothService.class);
+            stopService(intent);
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -194,16 +211,17 @@ public class MainActivity extends AppCompatActivity
 //        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
 //
 //        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
+        myBLEList.addAll(mSQLiteDBHelperDao.getConfigurationsAll());
 
-        //실험용1
-        MyBLE a = new MyBLE(R.drawable.dog,null, "강아지");
-        myBLEList.add(a);
-//
+//        //실험용1
+//        MyBLE a = new MyBLE(R.drawable.dog, "CC:44:63:42:F6:C0", "강아지");
+//        myBLEList.add(a);
+
 //        //실험용2
 //        a = new MyBLE(R.drawable.headphoneicon, null, "이어폰");
 //        myBLEList.add(a);
 
-        a = new MyBLE(R.drawable.plusicon, null, " ");
+        ProblemConfigurationVo a = new ProblemConfigurationVo( null ,R.drawable.plusicon, null, " ");
         myBLEList.add(a);
 
         myBLEAdapter.notifyDataSetChanged();

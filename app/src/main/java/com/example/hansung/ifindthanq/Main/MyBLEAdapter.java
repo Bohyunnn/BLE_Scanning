@@ -14,7 +14,8 @@ import com.bumptech.glide.Glide;
 import com.example.hansung.ifindthanq.BLEDistanceActivity;
 import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
 import com.example.hansung.ifindthanq.R;
-import com.example.hansung.ifindthanq.model.MyBLE;
+
+import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
 public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder> {
 
     private Context mContext;
-    private List<MyBLE> myBLEList;
+    private List<ProblemConfigurationVo> myBLEList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView bleImage;
@@ -39,7 +40,7 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
         }
     }
 
-    public MyBLEAdapter(Context mContext, List<MyBLE> myBLEList) {
+    public MyBLEAdapter(Context mContext, List<ProblemConfigurationVo> myBLEList) {
         this.mContext = mContext;
         this.myBLEList = myBLEList;
     }
@@ -53,7 +54,7 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
-        final MyBLE myBLE = myBLEList.get(position);
+        final ProblemConfigurationVo myBLE = myBLEList.get(position);
         holder.bleName.setText(myBLE.getBleName());
 
         Glide.with(mContext).load(myBLE.getBleImage()).into(holder.bleImage);
@@ -70,6 +71,7 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
                     // BLE 상세보기 Activity
                     Intent intent = new Intent(mContext, BLEDistanceActivity.class);
                     intent.putExtra("bleName", myBLE.getBleName());
+                    intent.putExtra("bleMac", myBLE.getMacs());
                     intent.putExtra("bleImage", myBLE.getBleImage());
                     mContext.startActivity(intent);
                 }

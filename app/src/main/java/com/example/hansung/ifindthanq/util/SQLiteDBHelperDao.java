@@ -21,7 +21,6 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
 
     // Contacts Table Columns names
     private static final String KEY_SEQ = "seq";
-    private static final String KEY_TYPE = "type";
     private static final String KEY_ALBUMIMAGE = "albumImage";
     private static final String KEY_BLEIMAGE = "bleImage";
     private static final String KEY_MACS = "macs";
@@ -33,7 +32,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_TABLE_BLE = "CREATE TABLE " + TABLE_BLE + "(" + KEY_SEQ + " INTEGER PRIMARY KEY," + KEY_TYPE + " VARCHAR, " + KEY_ALBUMIMAGE + " VARCHAR, " + KEY_BLEIMAGE + " INTEGER, " + KEY_MACS + " VARCHAR, " + KEY_BLENAME + " VARCHAR) ";
+        String CREATE_TABLE_BLE = "CREATE TABLE " + TABLE_BLE + "(" + KEY_SEQ + " INTEGER PRIMARY KEY," + KEY_ALBUMIMAGE + " VARCHAR, " + KEY_BLEIMAGE + " INTEGER, " + KEY_MACS + " VARCHAR, " + KEY_BLENAME + " VARCHAR) ";
         db.execSQL(CREATE_TABLE_BLE);
 
     }
@@ -47,7 +46,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
 
     public ProblemConfigurationVo getConfigurations( int seq) {
         ProblemConfigurationVo contact = new ProblemConfigurationVo();
-        String selectQuery = "SELECT  * FROM " +TABLE_BLE + " Where "+KEY_SEQ +"="+seq;
+        String selectQuery = "SELECT  * FROM " +TABLE_BLE + " where "+KEY_SEQ +"="+seq;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -56,11 +55,10 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 contact.setSeq(Integer.parseInt(cursor.getString(0)));
-                contact.setType(cursor.getString(1));
-                contact.setAlbumImage(cursor.getString(2));
-                contact.setBleImage(cursor.getInt(3));
-                contact.setMacs(cursor.getString(4));
-                contact.setBleName(cursor.getString(5));
+                contact.setAlbumImage(cursor.getString(1));
+                contact.setBleImage(cursor.getInt(2));
+                contact.setMacs(cursor.getString(3));
+                contact.setBleName(cursor.getString(4));
             } while (cursor.moveToNext());
         }
         if (db != null) {
@@ -69,7 +67,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         return contact;
     }
 
-    public ArrayList<ProblemConfigurationVo> getConfigurationsAll(String table) {
+    public ArrayList<ProblemConfigurationVo> getConfigurationsAll() {
         ArrayList<ProblemConfigurationVo> contactList = new ArrayList<ProblemConfigurationVo>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_BLE;
@@ -82,11 +80,10 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             do {
                 ProblemConfigurationVo contact = new ProblemConfigurationVo();
                 contact.setSeq(Integer.parseInt(cursor.getString(0)));
-                contact.setType(cursor.getString(1));
-                contact.setAlbumImage(cursor.getString(2));
-                contact.setBleImage(cursor.getInt(3));
-                contact.setMacs(cursor.getString(4));
-                contact.setBleName(cursor.getString(5));
+                contact.setAlbumImage(cursor.getString(1));
+                contact.setBleImage(cursor.getInt(2));
+                contact.setMacs(cursor.getString(3));
+                contact.setBleName(cursor.getString(4));
                 contactList.add(contact);
             } while (cursor.moveToNext());
         }
@@ -97,16 +94,15 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     }
 
 
-    public void addConfiguration(int type, ProblemConfigurationVo problemConfigurationVo) {
+    public void addConfiguration(ProblemConfigurationVo problemConfigurationVo) {
         SQLiteDatabase db = this.getReadableDatabase();
-        addConfiguration(type, db, problemConfigurationVo);
+        addConfiguration(db, problemConfigurationVo);
         db.close(); // Closing database connection
     }
 
-    public void addConfiguration(int type, SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
+    public void addConfiguration( SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
         ContentValues values = new ContentValues();
 
-        values.put(KEY_TYPE, problemConfigurationVo.getType());
         values.put(KEY_ALBUMIMAGE, problemConfigurationVo.getAlbumImage());
         values.put(KEY_BLEIMAGE, problemConfigurationVo.getBleImage());
         values.put(KEY_MACS, problemConfigurationVo.getMacs());

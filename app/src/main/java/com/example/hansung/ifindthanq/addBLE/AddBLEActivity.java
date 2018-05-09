@@ -55,7 +55,7 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
-
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -133,12 +133,27 @@ public class AddBLEActivity extends AppCompatActivity {
         String name = bleName.getText().toString(); //edittext에서 받아온 bleName 값을 String으로 변환
         intent.putExtra("bleName", "" + name);
 
-        System.out.print("[img] " + bt +"[resultIcon] " + resultIcon +", [Mac주소] " + macs + ", [등록할 bleName] " + name);
-        Toast.makeText(this, "[img] " + bt +"[resultIcon] " + resultIcon +"[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
+        System.out.print("[img] " + bt + "[resultIcon] " + resultIcon + ", [Mac주소] " + macs + ", [등록할 bleName] " + name);
+        Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
 
-        mSQLiteDBHelperDao = new SQLiteDBHelperDao(getBaseContext());
-        //ProblemConfigurationVo problem=new ProblemConfigurationVo(seq, type, bt, resultIcon, macs,  bleName);
-       // mSQLiteDBHelperDao.addConfiguration(mCount , problem); //ArrayList 데이터 추가
+//        ProblemConfigurationVo problem=new ProblemConfigurationVo (bt.toString(), Integer.parseInt(resultIcon), macs,  bleName.getText().toString());
+        ProblemConfigurationVo problem = null;
+        if (resultIcon != null) {
+            if (resultIcon.equals("1"))
+                problem = new ProblemConfigurationVo(null, R.drawable.dog, macs, bleName.getText().toString());
+            else if (resultIcon.equals("2"))
+                problem = new ProblemConfigurationVo(null, R.drawable.headphoneicon, macs, bleName.getText().toString());
+            else if (resultIcon.equals("3"))
+                problem = new ProblemConfigurationVo(null, R.drawable.bluetoothicon, macs, bleName.getText().toString());
+            else if (resultIcon.equals("4"))
+                problem = new ProblemConfigurationVo(null, R.drawable.passport, macs, bleName.getText().toString());
+
+        }
+//        else
+//            problem=new ProblemConfigurationVo(bt.toString(), 0, macs, bleName.getText().toString());
+
+            //이미지 부재
+            mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
 
         startActivity(intent);
 

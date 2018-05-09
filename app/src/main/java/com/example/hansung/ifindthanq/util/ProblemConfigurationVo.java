@@ -1,5 +1,7 @@
 package com.example.hansung.ifindthanq.util;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 public class ProblemConfigurationVo implements Serializable {
@@ -9,7 +11,6 @@ public class ProblemConfigurationVo implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int seq;
-    private String type;
     private String albumImage;
     private int bleImage;
     private String macs;
@@ -21,9 +22,7 @@ public class ProblemConfigurationVo implements Serializable {
 
     }
 
-    public ProblemConfigurationVo(int seq, String type, String albumImage, int bleImage, String macs, String bleName) {
-        this.seq = seq;
-        this.type = type;
+    public ProblemConfigurationVo(String albumImage, int bleImage, String macs, String bleName) {
         this.albumImage = albumImage;
         this.bleImage = bleImage;
         this.macs = macs;
@@ -40,14 +39,6 @@ public class ProblemConfigurationVo implements Serializable {
 
     public void setSeq(int seq) {
         this.seq = seq;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getAlbumImage() {

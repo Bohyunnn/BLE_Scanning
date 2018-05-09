@@ -23,11 +23,13 @@
 
     <!-- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> -->
 
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
-    <!-- <uses-feature -->
-    <!-- android:glEsVersion="0x00020000" -->
-    <!-- android:required="true" /> -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- 사진 권한 체크 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -48,6 +50,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- API 값 바꾸기! -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDO0h2SUUufEoaCrQH6j9fQ5Y5C1zlUTBo" />
+
         <activity android:name=".Loading.LodingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,11 +63,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- API 값 바꾸기! -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDO0h2SUUufEoaCrQH6j9fQ5Y5C1zlUTBo" />
-
         <activity
             android:name=".Main.MainActivity"
             android:label="@string/title_activity_main"
@@ -79,6 +82,12 @@
             android:name=".addBLE.ADDBLEImageIconSearchPOP"
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".nearBLE.NearDistanceBLEActivity" />
+        <activity android:name=".MapsActivity" />
+
+        <service
+            android:name=".BluetoothService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

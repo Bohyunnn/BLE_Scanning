@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_50"
+    android:background="@color/deep_purple_50"
     android:orientation="vertical"
     tools:context="com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity">
 
@@ -32,7 +32,7 @@
             android:layout_gravity="left|center_vertical"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/blue_900"
+            android:background="@color/toobar_purple"
             android:onClick="stopUpdateThread"
             android:text="검색종료"
             android:textAlignment="center"
