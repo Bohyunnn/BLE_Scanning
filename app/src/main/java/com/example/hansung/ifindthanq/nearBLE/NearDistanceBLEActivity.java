@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.hansung.ifindthanq.R;
@@ -27,6 +29,8 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
     private CustomNearAdapter adp;
     private Thread t = null;
     private ArrayList<NearBLE> nearBLES;
+    private Button startButton;
+    private IntentFilter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,8 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
 
         nearBLES = new ArrayList<>();
 
+        startButton = (Button) findViewById(R.id.startButton);
+
         adp = new CustomNearAdapter(nearBLES);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setAdapter(adp);
@@ -44,7 +50,7 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         mBluetoothAdapter.startDiscovery();
 
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
     }
 
@@ -109,10 +115,10 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
 
                 nearBLES.add(new NearBLE(deviceName, device.getAddress(), getTime, rssiResult, distance));
 
-                // System.out.println("[Device]==> Mac: " + device.getAddress() + "/ Name: " + device.getName() + "/UUID: " + device.getUuids());
+                // System.out.println("[Device]==> Mac: " + device.getAddressadp.setContext(context);() + "/ Name: " + device.getName() + "/UUID: " + device.getUuids());
                 // Log.i("BT", device.getName() + "\n" + device.getAddress());
 
-                adp.setContext(context);
+
                 RecyclerView list = (RecyclerView) findViewById(R.id.recyclerView);
                 list.setAdapter(adp);
             }
@@ -121,7 +127,23 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
 
     public void stopUpdateThread(View v) {
         if (t != null)
-            t.interrupt();
+            mBluetoothAdapter.cancelDiscovery();
+    }
+
+    //블루투스 검색 버튼 클릭
+    public void startUpdateThread(View v) {
+        //검색버튼 비활성화
+        startButton.setEnabled(false);
+        //mBluetoothAdapter.isDiscovering() : 블루투스 검색중인지 여부 확인
+        //mBluetoothAdapter.cancelDiscovery() : 블루투스 검색 취소
+        if (mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+        Log.d("restart", ">>>>>>>재검색중...");
+
+        mBluetoothAdapter.startDiscovery();
+        filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
     }
 
     @Override

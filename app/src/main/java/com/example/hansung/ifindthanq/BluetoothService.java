@@ -153,8 +153,8 @@ public class BluetoothService extends Service {
 
                 String searchDevice = device.getAddress();
 
-//                String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소!
-                String registerDevice = "98:D3:32:70:B0:73";
+                String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소! //hc-06
+                //String registerDevice = "98:D3:32:70:B0:73"; //내 핸드폰 맥 주소
 
                 if (searchDevice.equals(registerDevice)) {
                     Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
@@ -167,6 +167,12 @@ public class BluetoothService extends Service {
                         Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
 
                         //현재 위치 지도 찍어주기!!!!!!!!!!!!!!
+                        //맵sqlite > [registerName, registerDevice(mac), longitude, latitude, Date]
+
+                        //맵 등록 (BluetoothService.java)
+                        //  1. 맵에 등록될때, (registerName, registerDevice) 존재하면 => update
+                        //  2.                                              존재하지 않으면 => insert
+
                         try {
                             // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
                             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
@@ -228,6 +234,8 @@ public class BluetoothService extends Service {
             double longitude = location.getLongitude(); //경도
             double latitude = location.getLatitude();   //위도
 
+            Log.i("location >>>> ", "[" + longitude + " ," + latitude + "]");
+            System.out.println("location >>>>  [" + longitude + " ," + latitude + "]");
             //위도 경도 MapLocation에 설정
             mapLocation.setLongitude(longitude);
             mapLocation.setLatitude(latitude);

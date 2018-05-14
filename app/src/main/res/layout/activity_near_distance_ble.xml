@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,9 +25,25 @@
             android:textSize="15sp" />
 
         <Button
+            android:id="@+id/startButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|center_vertical"
+            android:layout_margin="10dp"
+            android:layout_weight="7"
+            android:background="@color/toobar_purple"
+            android:onClick="startUpdateThread"
+            android:text="다시검색"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
             android:id="@+id/button"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="100dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
             android:layout_margin="10dp"

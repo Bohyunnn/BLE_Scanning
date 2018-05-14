@@ -72,6 +72,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         String locationName = getAddress(getApplicationContext(), mapLocation.getLatitude(), mapLocation.getLongitude());
 
+//        맵에 마커 표시(MapsActivity.java)
+//        mapsqlite에서 [registerName, registerDevice, longitude, latitude, Date] 전체 다 가져오는 코드
+
         MarkerOptions markerOptions = new MarkerOptions();
 
         markerOptions.position(location);
