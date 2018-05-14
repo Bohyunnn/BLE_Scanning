@@ -12,7 +12,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.RequiresApi;
@@ -21,6 +25,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.hansung.ifindthanq.Main.MainActivity;
+import com.example.hansung.ifindthanq.mapBLE.MapLocation;
 import com.example.hansung.ifindthanq.model.NearBLE;
 
 import java.text.SimpleDateFormat;
@@ -32,9 +37,9 @@ public class BluetoothService extends Service {
     NotificationManager notificationManager;
     ServiceThread thread;
     Notification notification;
+    private MapLocation mapLocation;
+    private LocationManager lm;
 
-    public BluetoothService() {
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,6 +50,8 @@ public class BluetoothService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        mapLocation = new MapLocation();
     }
 
     //백그라운드에서 실행되는 동작들
@@ -146,21 +153,40 @@ public class BluetoothService extends Service {
 
                 String searchDevice = device.getAddress();
 
-                String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소!
+//                String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소!
+                String registerDevice = "98:D3:32:70:B0:73";
 
                 if (searchDevice.equals(registerDevice)) {
                     Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
                     Log.d("[rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
+
+                    //거리가 0이상이면 알람발생
                     if (dist > 0) {
                         Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
                         Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
                         Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
-                        //노티피케이션 발생 + 지도 찍어주기?
+
+                        //현재 위치 지도 찍어주기!!!!!!!!!!!!!!
+                        try {
+                            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+                            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
+                                    100, // 통지사이의 최소 시간간격 (miliSecond)
+                                    1, // 통지사이의 최소 변경거리 (m)
+                                    mLocationListener);
+                            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
+                                    100, // 통지사이의 최소 시간간격 (miliSecond)
+                                    1, // 통지사이의 최소 변경거리 (m)
+                                    mLocationListener);
+                        } catch (SecurityException ex) {
+                        }
+
+
                         //토스트 띄우기
                         intent = new Intent(BluetoothService.this, MainActivity.class);
                         PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                         Resources res = getResources();
 
+                        //노티피케이션 발생
                         notification = new Notification.Builder(getApplicationContext())
                                 .setContentTitle("블루투스 제품과 거리가 멀어요.") //제목
                                 .setContentText(registerDevice)  //Mac 주소
@@ -190,6 +216,37 @@ public class BluetoothService extends Service {
                 }
 
             }
+        }
+    };
+
+    LocationListener mLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            //여기서 위치값이 갱신되면 이벤트가 발생한다.
+            //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
+
+            Log.d("test", "onLocationChanged, location:" + location);
+            double longitude = location.getLongitude(); //경도
+            double latitude = location.getLatitude();   //위도
+
+            //위도 경도 MapLocation에 설정
+            mapLocation.setLongitude(longitude);
+            mapLocation.setLatitude(latitude);
+
+        }
+
+        public void onProviderDisabled(String provider) {
+            // Disabled시
+            Log.d("test", "onProviderDisabled, provider:" + provider);
+        }
+
+        public void onProviderEnabled(String provider) {
+            // Enabled시
+            Log.d("test", "onProviderEnabled, provider:" + provider);
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+            // 변경시
+            Log.d("test", "onStatusChanged, provider:" + provider + ", status:" + status + " ,Bundle:" + extras);
         }
     };
 

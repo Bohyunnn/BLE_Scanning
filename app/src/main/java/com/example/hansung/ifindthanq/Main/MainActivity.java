@@ -25,10 +25,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hansung.ifindthanq.BluetoothService;
-import com.example.hansung.ifindthanq.MapsActivity;
-import com.example.hansung.ifindthanq.mapBLE.BLEMapActivity;
+import com.example.hansung.ifindthanq.mapBLE.MapsActivity;
 import com.example.hansung.ifindthanq.BLESettingActivity;
-import com.example.hansung.ifindthanq.model.MyBLE;
 import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
 import com.example.hansung.ifindthanq.R;
 import com.example.hansung.ifindthanq.addBLE.BLESearchActivity;
@@ -187,7 +185,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, NearDistanceBLEActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_mapBLE) {
-            Intent intent = new Intent(this, BLEMapActivity.class);
+            //Intent intent = new Intent(this, BLEMapActivity.class);
+            Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_settingBlue) {
             //

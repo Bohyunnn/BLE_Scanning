@@ -82,7 +82,7 @@
             android:name=".addBLE.ADDBLEImageIconSearchPOP"
             android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".nearBLE.NearDistanceBLEActivity" />
-        <activity android:name=".MapsActivity" />
+        <activity android:name=".mapBLE.MapsActivity" />
 
         <service
             android:name=".BluetoothService"

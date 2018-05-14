@@ -140,7 +140,7 @@ public class AddBLEActivity extends AppCompatActivity {
         ProblemConfigurationVo problem = null;
         if (resultIcon != null) {
             if (resultIcon.equals("1"))
-                problem = new ProblemConfigurationVo(null, R.drawable.dog, macs, bleName.getText().toString());
+                problem = new ProblemConfigurationVo(null, R.drawable.dogicon, macs, bleName.getText().toString());
             else if (resultIcon.equals("2"))
                 problem = new ProblemConfigurationVo(null, R.drawable.headphoneicon, macs, bleName.getText().toString());
             else if (resultIcon.equals("3"))
