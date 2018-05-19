@@ -30,6 +30,11 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public SQLiteDBHelperDao(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE_BLE = "CREATE TABLE " + TABLE_BLE + "(" + KEY_SEQ + " INTEGER PRIMARY KEY," + KEY_ALBUMIMAGE + " VARCHAR, " + KEY_BLEIMAGE + " INTEGER, " + KEY_MACS + " VARCHAR, " + KEY_BLENAME + " VARCHAR) ";
@@ -44,9 +49,9 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ProblemConfigurationVo getConfigurations( int seq) {
+    public ProblemConfigurationVo getConfigurations(int seq) {
         ProblemConfigurationVo contact = new ProblemConfigurationVo();
-        String selectQuery = "SELECT  * FROM " +TABLE_BLE + " where "+KEY_SEQ +"="+seq;
+        String selectQuery = "SELECT  * FROM " + TABLE_BLE + " where " + KEY_SEQ + "=" + seq;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -100,7 +105,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
-    public void addConfiguration( SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
+    public void addConfiguration(SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
         ContentValues values = new ContentValues();
 
         values.put(KEY_ALBUMIMAGE, problemConfigurationVo.getAlbumImage());
@@ -110,4 +115,13 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
 
         db.insert(TABLE_BLE, null, values);
     }
+
+    //삭제 기능
+    public void deleteConfiguration(String macs) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_BLE+" WHERE macs='" + macs + "';");
+        db.close();
+
+    }
+
 }

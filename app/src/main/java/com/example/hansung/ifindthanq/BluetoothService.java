@@ -153,15 +153,15 @@ public class BluetoothService extends Service {
 
                 String searchDevice = device.getAddress();
 
-                String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소! //hc-06
-                //String registerDevice = "98:D3:32:70:B0:73"; //내 핸드폰 맥 주소
+                //String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소! //hc-06
+                String registerDevice = "98:D3:32:70:B0:73"; //내 핸드폰 맥 주소
 
                 if (searchDevice.equals(registerDevice)) {
                     Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
                     Log.d("[rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
 
                     //거리가 0이상이면 알람발생
-                    if (dist > 0) {
+                    if (dist > 1) {
                         Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
                         Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
                         Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);

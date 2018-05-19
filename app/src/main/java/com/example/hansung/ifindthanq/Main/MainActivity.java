@@ -212,14 +212,6 @@ public class MainActivity extends AppCompatActivity
 //        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
         myBLEList.addAll(mSQLiteDBHelperDao.getConfigurationsAll());
 
-//        //실험용1
-//        MyBLE a = new MyBLE(R.drawable.dog, "CC:44:63:42:F6:C0", "강아지");
-//        myBLEList.add(a);
-
-//        //실험용2
-//        a = new MyBLE(R.drawable.headphoneicon, null, "이어폰");
-//        myBLEList.add(a);
-
         ProblemConfigurationVo a = new ProblemConfigurationVo( null ,R.drawable.plusicon, null, " ");
         myBLEList.add(a);
 
