@@ -11,11 +11,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.hansung.ifindthanq.R;
+import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -25,14 +28,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
+    private ArrayList<MapLocation> locationList;
+    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;
+
     private GoogleMap mMap;
-    private double mLatitude = 37.52487;
-    private double mLongitude = 126.92723;
+    private double mLatitude = 37.581764;
+    private double mLongitude = 127.010326;
     private MapLocation mapLocation;
 
 
@@ -40,11 +47,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("블루투스 꺼진 곳 위치");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //기본 생성(위치)
-        mapLocation = new MapLocation(mLatitude, mLongitude);
+        //mapLocation = new MapLocation(mLatitude, mLongitude);
 
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
         FragmentManager fragmentManager = getFragmentManager();
 
@@ -68,26 +80,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap map) {
 
-        LatLng location = new LatLng(mapLocation.getLatitude(), mapLocation.getLongitude());
+        //위치 데이터 불러옴
+        locationList = mSQLiteDBHelperDao.getConfigurationsLocAll();
 
-        String locationName = getAddress(getApplicationContext(), mapLocation.getLatitude(), mapLocation.getLongitude());
 
-//        맵에 마커 표시(MapsActivity.java)
-//        mapsqlite에서 [registerName, registerDevice, longitude, latitude, Date] 전체 다 가져오는 코드
+        //      위치 데이터들을 순차적으로 마킹해준다.
+        for (int i = 0; i < locationList.size(); i++) {
+            Log.e("locationList", locationList.get(i).getBle_name());
 
-        MarkerOptions markerOptions = new MarkerOptions();
+            LatLng location = new LatLng(locationList.get(i).getLatitude(), locationList.get(i).getLongitude());
 
-        markerOptions.position(location);
+            String locationName = getAddress(getApplicationContext(), locationList.get(i).getLatitude(), locationList.get(i).getLongitude());
 
-        markerOptions.title("블루투스 꺼진 곳");
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(location);
+            markerOptions.title("[" + locationList.get(i).getBle_name() + "]"+ locationList.get(i).getTime());
+            markerOptions.snippet(locationName);
 
-        markerOptions.snippet(locationName);
+            map.addMarker(markerOptions);
+        }
 
-        map.addMarker(markerOptions);
-
+        LatLng location = new LatLng(mLatitude, mLongitude);
 
         //화면중앙의 위치와 카메라 줌비율
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 18));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 13));
 
     }
 

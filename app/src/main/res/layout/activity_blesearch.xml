@@ -127,7 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="클릭시 페어링 등록됩니다."
+            android:text="길게 클릭시 페어링 등록됩니다."
             android:textSize="10sp" />
 
         <ListView

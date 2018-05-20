@@ -27,9 +27,13 @@ import android.widget.Toast;
 import com.example.hansung.ifindthanq.Main.MainActivity;
 import com.example.hansung.ifindthanq.mapBLE.MapLocation;
 import com.example.hansung.ifindthanq.model.NearBLE;
+import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
+import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class BluetoothService extends Service {
     //onCreate-> onStartCommand-> Service Running -> onDestory 순으로 진행됨.
@@ -40,6 +44,12 @@ public class BluetoothService extends Service {
     private MapLocation mapLocation;
     private LocationManager lm;
 
+    private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
+
+    private double lat1 = 36.306817;
+    private double lon1 = 127.343497;
+    private double lat2 = 37.52487;
+    private double lon2 = 125.92723;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,6 +62,8 @@ public class BluetoothService extends Service {
         super.onCreate();
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mapLocation = new MapLocation();
+
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
     }
 
     //백그라운드에서 실행되는 동작들
@@ -78,40 +90,12 @@ public class BluetoothService extends Service {
         @Override
         public void handleMessage(android.os.Message msg) {
             // Register the BroadcastReceiver
+            Intent intent = new Intent(BluetoothService.this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mReceiver, filter);
 
-
-//            //notification 알람
-//            Intent intent = new Intent(BluetoothService.this, MainActivity.class);
-//            PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//            Resources res = getResources();
-//
-//            notification = new Notification.Builder(getApplicationContext())
-//                    .setContentTitle("블루투스 제품과 거리가 멀어요.") //제목
-//                    .setContentText("블루투스 제품 값 / mac 주소 값")  //내용
-//                    .setSmallIcon(R.drawable.bluetoothicon)
-//                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.bluetoothicon))  //아이콘
-//                    .setTicker("블루투스 제품 분실 위험이 있어요!")    //알람 내용
-//                    .setContentIntent(pendingIntent)
-//                    .setWhen(System.currentTimeMillis())
-//                    .build();
-//
-//            //소리, 진동 추가
-//            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//
-//            //알림 소리를 한번만 내도록
-//            notification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
-//
-//            //확인하면 자동으로 알림이 제거 되도록
-//            notification.flags = Notification.FLAG_AUTO_CANCEL;
-//
-//            //노티피케이션의 고유아이디 777로 설정
-//            notificationManager.notify(777, notification);
-//
-//            //토스트 띄우기
-//            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -150,77 +134,86 @@ public class BluetoothService extends Service {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
-
                 String searchDevice = device.getAddress();
 
-                //String registerDevice = "CC:44:63:42:F6:C0"; //임시로 맥 주소! //hc-06
-                String registerDevice = "98:D3:32:70:B0:73"; //내 핸드폰 맥 주소
+                String registerDevice;
+                //String registerDevice = "CC:44:63:42:F6:C0"; //내 핸드폰 맥 주소
+                //String registerDevice = "98:D3:32:70:B0:73"; //임시로 맥 주소! //hc-06
 
-                if (searchDevice.equals(registerDevice)) {
-                    Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
-                    Log.d("[rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
+                List<ProblemConfigurationVo> listBluetooth = mSQLiteDBHelperDao.getConfigurationsAll();
 
-                    //거리가 0이상이면 알람발생
-                    if (dist > 1) {
-                        Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
-                        Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
-                        Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
+                for (ProblemConfigurationVo problemConfigurationVo : listBluetooth) {
+                    Log.d("BluetoothService", "비교 Mac 주소>>" + problemConfigurationVo.getBleName() + "," + problemConfigurationVo.getMacs());
+                    registerDevice = problemConfigurationVo.getMacs();
 
-                        //현재 위치 지도 찍어주기!!!!!!!!!!!!!!
-                        //맵sqlite > [registerName, registerDevice(mac), longitude, latitude, Date]
 
-                        //맵 등록 (BluetoothService.java)
-                        //  1. 맵에 등록될때, (registerName, registerDevice) 존재하면 => update
-                        //  2.                                              존재하지 않으면 => insert
+                    if (searchDevice.equals(registerDevice)) {
+                        Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
+                        Log.d("[rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
 
-                        try {
-                            // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                    100, // 통지사이의 최소 시간간격 (miliSecond)
-                                    1, // 통지사이의 최소 변경거리 (m)
-                                    mLocationListener);
-                            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                    100, // 통지사이의 최소 시간간격 (miliSecond)
-                                    1, // 통지사이의 최소 변경거리 (m)
-                                    mLocationListener);
-                        } catch (SecurityException ex) {
+                        //거리가 0이상이면 알람발생
+                        if (dist >= 0) {
+                            Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
+                            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
+                            Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
+
+                            //          insert location
+//            더미 location data
+                            MapLocation location1 = new MapLocation("example1", getNowTime(), lat1, lon1);
+                            MapLocation location2 = new MapLocation("example2", getNowTime(), lat2, lon2);
+
+//            위치정보 db에 추가
+                            mSQLiteDBHelperDao.addConfigurationLoc(location2);
+
+                            try {
+                                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
+                                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
+                                        100, // 통지사이의 최소 시간간격 (miliSecond)
+                                        1, // 통지사이의 최소 변경거리 (m)
+                                        mLocationListener);
+                                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
+                                        100, // 통지사이의 최소 시간간격 (miliSecond)
+                                        1, // 통지사이의 최소 변경거리 (m)
+                                        mLocationListener);
+                            } catch (SecurityException ex) {
+                            }
+
+
+                            //토스트 띄우기
+                            intent = new Intent(BluetoothService.this, MainActivity.class);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            Resources res = getResources();
+
+                            //노티피케이션 발생
+                            notification = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle("[" + problemConfigurationVo.getBleName() + "] 블루투스 제품과 거리가 멀어요.") //제목
+                                    .setContentText(registerDevice)  //Mac 주소
+                                    .setSmallIcon(R.drawable.bluetoothicon)
+                                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.bluetoothicon))  //아이콘
+                                    .setTicker("블루투스 제품 분실 위험이 있어요!")    //알람 내용
+                                    .setContentIntent(pendingIntent)
+                                    .setWhen(System.currentTimeMillis())
+                                    .build();
+
+                            //소리, 진동 추가
+                            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+
+                            //알림 소리를 한번만 내도록
+                            notification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+
+                            //확인하면 자동으로 알림이 제거 되도록
+                            notification.flags = Notification.FLAG_AUTO_CANCEL;
+
+                            //노티피케이션의 고유아이디 777로 설정
+                            notificationManager.notify(777, notification);
+
+                            //토스트 띄우기
+                            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
+
                         }
-
-
-                        //토스트 띄우기
-                        intent = new Intent(BluetoothService.this, MainActivity.class);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(BluetoothService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        Resources res = getResources();
-
-                        //노티피케이션 발생
-                        notification = new Notification.Builder(getApplicationContext())
-                                .setContentTitle("블루투스 제품과 거리가 멀어요.") //제목
-                                .setContentText(registerDevice)  //Mac 주소
-                                .setSmallIcon(R.drawable.bluetoothicon)
-                                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.bluetoothicon))  //아이콘
-                                .setTicker("블루투스 제품 분실 위험이 있어요!")    //알람 내용
-                                .setContentIntent(pendingIntent)
-                                .setWhen(System.currentTimeMillis())
-                                .build();
-
-                        //소리, 진동 추가
-                        notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-
-                        //알림 소리를 한번만 내도록
-                        notification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
-
-                        //확인하면 자동으로 알림이 제거 되도록
-                        notification.flags = Notification.FLAG_AUTO_CANCEL;
-
-                        //노티피케이션의 고유아이디 777로 설정
-                        notificationManager.notify(777, notification);
-
-                        //토스트 띄우기
-                        Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
-
                     }
-                }
 
+                }
             }
         }
     };
@@ -257,6 +250,16 @@ public class BluetoothService extends Service {
             Log.d("test", "onStatusChanged, provider:" + provider + ", status:" + status + " ,Bundle:" + extras);
         }
     };
+
+    private String getNowTime() {
+        String time = null;
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yy/MM/dd hh:mm:ss");
+        time = sdf1.format(cal.getTime());
+
+        return time;
+    }
 
 
 }

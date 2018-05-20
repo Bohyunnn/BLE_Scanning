@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.hansung.ifindthanq.mapBLE.MapLocation;
+
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SQLiteDBHelperDao extends SQLiteOpenHelper {
@@ -26,26 +29,35 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     private static final String KEY_MACS = "macs";
     private static final String KEY_BLENAME = "bleName";
 
+    // Contacts table name
+    private static final String TABLE_LOC = "item_loc";
+
+    // Location Table Columns names
+    private static final String KEY_SEQ_LOC = "seq";
+    private static final String KEY_LAT = "latitude";
+    private static final String KEY_LON = "longitude";
+    private static final String KEY_TIME = "time";
+    private static final String KEY_NAME = "name";
+
+    private AtomicInteger openCounter = new AtomicInteger();
+
     public SQLiteDBHelperDao(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public SQLiteDBHelperDao(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE_BLE = "CREATE TABLE " + TABLE_BLE + "(" + KEY_SEQ + " INTEGER PRIMARY KEY," + KEY_ALBUMIMAGE + " VARCHAR, " + KEY_BLEIMAGE + " INTEGER, " + KEY_MACS + " VARCHAR, " + KEY_BLENAME + " VARCHAR) ";
+        String CREATE_TABLE_LOC = "CREATE TABLE " + TABLE_LOC + "(" + KEY_SEQ_LOC + " INTEGER PRIMARY KEY," + KEY_NAME + " VARCHAR, " + KEY_LAT + " VARCHAR, " + KEY_LON + " VARCHAR, " + KEY_TIME + " VARCHAR) ";
         db.execSQL(CREATE_TABLE_BLE);
-
+        db.execSQL(CREATE_TABLE_LOC);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BLE);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOC);
         onCreate(db);
     }
 
@@ -53,7 +65,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         ProblemConfigurationVo contact = new ProblemConfigurationVo();
         String selectQuery = "SELECT  * FROM " + TABLE_BLE + " where " + KEY_SEQ + "=" + seq;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = openDb();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -67,7 +79,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         if (db != null) {
-            db.close();
+            closeDb(db);
         }
         return contact;
     }
@@ -77,7 +89,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
 
         String selectQuery = "SELECT  * FROM " + TABLE_BLE;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = openDb();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -93,16 +105,64 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         if (db != null) {
-            db.close();
+            closeDb(db);
         }
         return contactList;
     }
 
+    public ArrayList<MapLocation> getConfigurationsLocAll(SQLiteDatabase db) {
+        ArrayList<MapLocation> contactList = new ArrayList<MapLocation>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_LOC;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MapLocation location = new MapLocation();
+                location.setBle_name(cursor.getString(1));
+                location.setLatitude(Double.parseDouble(cursor.getString(2)));
+                location.setLongitude(Double.parseDouble(cursor.getString(3)));
+                location.setTime(cursor.getString(4));
+                contactList.add(location);
+            } while (cursor.moveToNext());
+        }
+//        if (db != null) {
+//            closeDb(db);
+//        }
+        return contactList;
+    }
+
+    public ArrayList<MapLocation> getConfigurationsLocAll() {
+        ArrayList<MapLocation> contactList = new ArrayList<MapLocation>();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_LOC;
+
+        SQLiteDatabase db = openDb();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                MapLocation location = new MapLocation();
+                location.setBle_name(cursor.getString(1));
+                location.setLatitude(Double.parseDouble(cursor.getString(2)));
+                location.setLongitude(Double.parseDouble(cursor.getString(3)));
+                location.setTime(cursor.getString(4));
+                contactList.add(location);
+            } while (cursor.moveToNext());
+        }
+        if (db != null) {
+            closeDb(db);
+        }
+        return contactList;
+    }
 
     public void addConfiguration(ProblemConfigurationVo problemConfigurationVo) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = openDb();
         addConfiguration(db, problemConfigurationVo);
-        db.close(); // Closing database connection
+        closeDb(db);
     }
 
     public void addConfiguration(SQLiteDatabase db, ProblemConfigurationVo problemConfigurationVo) {
@@ -116,6 +176,71 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         db.insert(TABLE_BLE, null, values);
     }
 
+    public void addConfigurationLoc(MapLocation location) {
+        SQLiteDatabase db = openDb();
+        addConfigurationLoc(db, location);
+        closeDb(db);
+    }
+
+    //    위치 데이터 insert, update
+    public void addConfigurationLoc(SQLiteDatabase db, MapLocation location) {
+//      데이터중 추가하려는 ble_name을 가진 row가 있는지 여부
+        boolean isEquals = false;
+
+        ArrayList<MapLocation> list = new ArrayList<>();
+        list = getConfigurationsLocAll(db);
+        if (list.size() != 0) {
+//          update 해야하는지 검사
+            for (int i = 0; i < list.size(); i++) {
+                if (location.getBle_name().equals(list.get(i).getBle_name())) {
+                    isEquals = true;
+                }
+            }
+
+            if (isEquals) {
+                ContentValues values = new ContentValues();
+
+                values.put(KEY_LAT, location.getLatitude());
+                values.put(KEY_LON, location.getLongitude());
+                values.put(KEY_TIME, location.getTime());
+
+                db.update(TABLE_LOC, values, "name=?", new String[]{location.getBle_name()});
+            } else {
+                ContentValues values = new ContentValues();
+
+                values.put(KEY_NAME, location.getBle_name());
+                values.put(KEY_LAT, location.getLatitude());
+                values.put(KEY_LON, location.getLongitude());
+                values.put(KEY_TIME, location.getTime());
+
+                db.insert(TABLE_LOC, null, values);
+            }
+        } else { //데이터를 처음 넣을경우
+            ContentValues values = new ContentValues();
+
+            values.put(KEY_NAME, location.getBle_name());
+            values.put(KEY_LAT, location.getLatitude());
+            values.put(KEY_LON, location.getLongitude());
+            values.put(KEY_TIME, location.getTime());
+
+            db.insert(TABLE_LOC, null, values);
+        }
+    }
+
+    public synchronized SQLiteDatabase openDb(){
+        SQLiteDatabase db = null;
+        if(openCounter.incrementAndGet()==1){
+            db = this.getWritableDatabase();
+        }
+        return db;
+    }
+
+    public synchronized void closeDb(SQLiteDatabase db){
+        if(openCounter.decrementAndGet()==0){
+            db.close();
+        }
+    }
+
     //삭제 기능
     public void deleteConfiguration(String macs) {
         SQLiteDatabase db = getWritableDatabase();
@@ -123,5 +248,4 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         db.close();
 
     }
-
 }

@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -70,7 +71,11 @@ public class BLESearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blesearch);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("블루투스 등록하기");
+
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //UI
         txtState = (TextView) findViewById(R.id.txtState);
@@ -105,6 +110,7 @@ public class BLESearchActivity extends AppCompatActivity {
 
         //검색된 블루투스 디바이스 데이터
         bluetoothDevices = new ArrayList<>();
+
         //선택한 디바이스 없음
         selectDevice = -1;
 

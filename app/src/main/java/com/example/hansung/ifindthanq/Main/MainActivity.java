@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("IFindThanQ");
+        actionBar.setTitle("IFindThanKQ");
         toolbar.setTitleTextColor(Color.WHITE);
 
         //+버튼 누를 시 작동
@@ -206,12 +206,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void prepareAlbums() {
-
-//        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
-//
-//        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
+        //등록된 블루투스 DB 가져오기
         myBLEList.addAll(mSQLiteDBHelperDao.getConfigurationsAll());
 
+        //plus(+) 버튼
         ProblemConfigurationVo a = new ProblemConfigurationVo( null ,R.drawable.plusicon, null, " ");
         myBLEList.add(a);
 

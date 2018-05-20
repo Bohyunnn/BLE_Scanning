@@ -13,9 +13,12 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,6 +34,7 @@ import com.example.hansung.ifindthanq.model.MyBLE;
 import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,8 +59,12 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("블루투스 등록하기");
+
         mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -125,13 +133,13 @@ public class AddBLEActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
 
         //사진이랑 아이콘
-        intent.putExtra("img", bt);
-        intent.putExtra("resultIcon", resultIcon);
+//        intent.putExtra("img", bt);
+//        intent.putExtra("resultIcon", resultIcon);
 //
 //        intent.putExtra(macs, "" + macs);
 
         String name = bleName.getText().toString(); //edittext에서 받아온 bleName 값을 String으로 변환
-        intent.putExtra("bleName", "" + name);
+//        intent.putExtra("bleName", "" + name);
 
         System.out.print("[img] " + bt + "[resultIcon] " + resultIcon + ", [Mac주소] " + macs + ", [등록할 bleName] " + name);
         Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
@@ -147,15 +155,22 @@ public class AddBLEActivity extends AppCompatActivity {
                 problem = new ProblemConfigurationVo(null, R.drawable.bluetoothicon, macs, bleName.getText().toString());
             else if (resultIcon.equals("4"))
                 problem = new ProblemConfigurationVo(null, R.drawable.passport, macs, bleName.getText().toString());
-
+        }else{
+            if(String.valueOf(bt)!=null){
+                String btToString = getBase64String(bt);
+                Log.e("64",btToString);
+                problem=new ProblemConfigurationVo(btToString, 0, macs, bleName.getText().toString());
+            }
         }
-//        else
-//            problem=new ProblemConfigurationVo(bt.toString(), 0, macs, bleName.getText().toString());
+        //        problem = new ProblemConfigurationVo(null, R.drawable.bluetoothicon, macs, bleName.getText().toString());
 
-            //이미지 부재
-            mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
+
+
+        //이미지 부재
+        mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
 
         startActivity(intent);
+        finish();
 
         //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
 //        List<MyBLE> myBLEList = null;
@@ -179,4 +194,12 @@ public class AddBLEActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public String getBase64String(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+    }
+
 }

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_noNotification"
-        android:icon="@android:drawable/ic_lock_silent_mode"
+        android:icon="@drawable/nobell"
         android:title="@string/action_noNotification"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_notification"
-        android:icon="@android:drawable/ic_popup_reminder"
+        android:icon="@drawable/bell"
         android:title="@string/action_notification"
         app:showAsAction="always" />
     <item
