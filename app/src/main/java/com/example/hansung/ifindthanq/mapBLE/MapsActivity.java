@@ -94,7 +94,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             MarkerOptions markerOptions = new MarkerOptions();
             markerOptions.position(location);
-            markerOptions.title("[" + locationList.get(i).getBle_name() + "]"+ locationList.get(i).getTime());
+            markerOptions.title("[" + locationList.get(i).getBle_name() + "] "+ locationList.get(i).getTime());
             markerOptions.snippet(locationName);
 
             map.addMarker(markerOptions);

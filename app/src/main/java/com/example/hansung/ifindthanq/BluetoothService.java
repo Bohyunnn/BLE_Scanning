@@ -1,5 +1,7 @@
 package com.example.hansung.ifindthanq;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,8 +12,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,9 +24,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.hansung.ifindthanq.Main.MainActivity;
@@ -29,11 +39,26 @@ import com.example.hansung.ifindthanq.mapBLE.MapLocation;
 import com.example.hansung.ifindthanq.model.NearBLE;
 import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 import com.example.hansung.ifindthanq.util.SQLiteDBHelperDao;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executor;
+
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class BluetoothService extends Service {
     //onCreate-> onStartCommand-> Service Running -> onDestory 순으로 진행됨.
@@ -51,6 +76,17 @@ public class BluetoothService extends Service {
     private double lat2 = 37.52487;
     private double lon2 = 125.92723;
 
+    private double mLatitude = 37.581764;
+    private double mLongitude = 127.010326;
+
+    protected LocationCallback mLocationCallback;
+    private static final int RC_LOCATION = 1;
+    private static final int RC_LOCATION_UPDATE = 2;
+    protected static final String TAG = "MainActivity";
+    protected Location mLastLocation;
+    FusedLocationProviderClient mFusedLocationClient;
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -64,6 +100,9 @@ public class BluetoothService extends Service {
         mapLocation = new MapLocation();
 
         mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
     //백그라운드에서 실행되는 동작들
@@ -95,7 +134,6 @@ public class BluetoothService extends Service {
 
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mReceiver, filter);
-
         }
     }
 
@@ -137,8 +175,6 @@ public class BluetoothService extends Service {
                 String searchDevice = device.getAddress();
 
                 String registerDevice;
-                //String registerDevice = "CC:44:63:42:F6:C0"; //내 핸드폰 맥 주소
-                //String registerDevice = "98:D3:32:70:B0:73"; //임시로 맥 주소! //hc-06
 
                 List<ProblemConfigurationVo> listBluetooth = mSQLiteDBHelperDao.getConfigurationsAll();
 
@@ -149,35 +185,25 @@ public class BluetoothService extends Service {
 
                     if (searchDevice.equals(registerDevice)) {
                         Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
-                        Log.d("[rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
+                        Log.d("[BS-rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
 
                         //거리가 0이상이면 알람발생
                         if (dist >= 0) {
-                            Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
-                            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
-                            Log.d("[rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
+                            //Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
 
+                            Log.d("[BS-rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
+                            //위치값 찍어주기
+                            getLastLocation();
+
+                            Log.d("[BS-location 값]", mLatitude + ", " + mLongitude);
                             //          insert location
 //            더미 location data
-                            MapLocation location1 = new MapLocation("example1", getNowTime(), lat1, lon1);
-                            MapLocation location2 = new MapLocation("example2", getNowTime(), lat2, lon2);
+//                            MapLocation location1 = new MapLocation("example1", getNowTime(), lat1, lon1);
+//                            MapLocation location2 = new MapLocation("example2", getNowTime(), lat2, lon2);
+                            MapLocation location = new MapLocation(problemConfigurationVo.getBleName(), getNowTime(), mLatitude, mLongitude);
 
 //            위치정보 db에 추가
-                            mSQLiteDBHelperDao.addConfigurationLoc(location2);
-
-                            try {
-                                // GPS 제공자의 정보가 바뀌면 콜백하도록 리스너 등록하기~!!!
-                                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, // 등록할 위치제공자
-                                        100, // 통지사이의 최소 시간간격 (miliSecond)
-                                        1, // 통지사이의 최소 변경거리 (m)
-                                        mLocationListener);
-                                lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, // 등록할 위치제공자
-                                        100, // 통지사이의 최소 시간간격 (miliSecond)
-                                        1, // 통지사이의 최소 변경거리 (m)
-                                        mLocationListener);
-                            } catch (SecurityException ex) {
-                            }
-
+                            mSQLiteDBHelperDao.addConfigurationLoc(location);
 
                             //토스트 띄우기
                             intent = new Intent(BluetoothService.this, MainActivity.class);
@@ -208,8 +234,8 @@ public class BluetoothService extends Service {
                             notificationManager.notify(777, notification);
 
                             //토스트 띄우기
-                            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
-
+//                            Toast.makeText(BluetoothService.this, "뜸?", Toast.LENGTH_LONG).show();
+                            Log.d("[BS-notification]", rssi + " 거리는 =" + dist);
                         }
                     }
 
@@ -218,38 +244,6 @@ public class BluetoothService extends Service {
         }
     };
 
-    LocationListener mLocationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            //여기서 위치값이 갱신되면 이벤트가 발생한다.
-            //값은 Location 형태로 리턴되며 좌표 출력 방법은 다음과 같다.
-
-            Log.d("test", "onLocationChanged, location:" + location);
-            double longitude = location.getLongitude(); //경도
-            double latitude = location.getLatitude();   //위도
-
-            Log.i("location >>>> ", "[" + longitude + " ," + latitude + "]");
-            System.out.println("location >>>>  [" + longitude + " ," + latitude + "]");
-            //위도 경도 MapLocation에 설정
-            mapLocation.setLongitude(longitude);
-            mapLocation.setLatitude(latitude);
-
-        }
-
-        public void onProviderDisabled(String provider) {
-            // Disabled시
-            Log.d("test", "onProviderDisabled, provider:" + provider);
-        }
-
-        public void onProviderEnabled(String provider) {
-            // Enabled시
-            Log.d("test", "onProviderEnabled, provider:" + provider);
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            // 변경시
-            Log.d("test", "onStatusChanged, provider:" + provider + ", status:" + status + " ,Bundle:" + extras);
-        }
-    };
 
     private String getNowTime() {
         String time = null;
@@ -262,4 +256,71 @@ public class BluetoothService extends Service {
     }
 
 
+    //-------------------------------
+//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+//
+//    }
+
+    @SuppressWarnings("MissingPermission")
+    @AfterPermissionGranted(RC_LOCATION_UPDATE)
+    public void startLocationUpdate() {
+        LocationRequest locRequest = new LocationRequest();
+        locRequest.setInterval(3000);
+        locRequest.setFastestInterval(1000);
+        locRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                getLastLocation();
+            }
+        };
+
+
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            mFusedLocationClient.requestLocationUpdates(locRequest, mLocationCallback, Looper.myLooper());
+        } else {
+//            // Do not have permissions, request them now
+//            EasyPermissions.requestPermissions(this,
+//                    "This app needs access to your location to know where you are.",
+//                    RC_LOCATION_UPDATE, perms);
+        }
+    }
+
+    public void stopLocationUpdate() {
+        mFusedLocationClient.removeLocationUpdates(mLocationCallback);
+    }
+
+    @SuppressWarnings("MissingPermission")
+    @AfterPermissionGranted(RC_LOCATION)
+    public void getLastLocation() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        mLastLocation = task.getResult();
+                        try {
+                            Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.KOREA);
+                            List<Address> addresses = geocoder.getFromLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude(), 1);
+                            if (addresses.size() > 0) {
+                                Address address = addresses.get(0);
+                                mLongitude = address.getLongitude();
+                                mLatitude = address.getLatitude();
+                            }
+                        } catch (IOException e) {
+                            Log.e(TAG, "Failed in using Geocoder", e);
+                        }
+                    }
+                }
+            });
+        } else {
+            //EasyPermissions.requestPermissions(this, "This app needs access to your location to know where you are", RC_LOCATION, perms);
+        }
+    }
 }

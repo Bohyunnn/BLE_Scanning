@@ -59,12 +59,12 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
+        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("블루투스 등록하기");
 
-        mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -195,11 +195,14 @@ public class AddBLEActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public String getBase64String(Bitmap bitmap) {
+    public String getBase64String(Bitmap bitmap)
+    {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
         byte[] imageBytes = byteArrayOutputStream.toByteArray();
+
         return Base64.encodeToString(imageBytes, Base64.NO_WRAP);
     }
-
 }

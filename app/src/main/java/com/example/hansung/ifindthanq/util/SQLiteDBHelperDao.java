@@ -240,12 +240,11 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             db.close();
         }
     }
-
     //삭제 기능
     public void deleteConfiguration(String macs) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_BLE+" WHERE macs='" + macs + "';");
+        //db.execSQL("DELETE FROM "+TABLE_LOC+" WHERE macs='" + macs + "';");
         db.close();
-
     }
 }
