@@ -19,8 +19,7 @@ Hansung University Capston Design
 #
 
 ### 작품 구조
-<img src="https://user-images.githubusercontent.com/22364009/40588749-7ea4505a-621d-11e8-81f6-525906ab950a.png" width="90%"></img>
-#
+<img src="https://user-images.githubusercontent.com/22364009/40588749-7ea4505a-621d-11e8-81f6-525906ab950a.png" width="80%"></img>
 
 ### 개발환경
 Android Studio, ARDUINO
