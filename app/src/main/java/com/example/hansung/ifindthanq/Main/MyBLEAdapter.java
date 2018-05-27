@@ -88,6 +88,7 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
                     intent.putExtra("bleName", myBLE.getBleName());
                     intent.putExtra("bleMac", myBLE.getMacs());
                     intent.putExtra("bleImage", myBLE.getBleImage());
+                    intent.putExtra("albumImage", myBLE.getAlbumImage());
                     mContext.startActivity(intent);
                 }
             }

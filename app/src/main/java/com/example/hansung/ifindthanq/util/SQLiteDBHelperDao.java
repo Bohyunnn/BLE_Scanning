@@ -242,10 +242,10 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     }
 
     //등록된 블루투스 삭제 기능
-    public void deleteConfiguration(String macs) {
+    public void deleteConfiguration(String bleName) {
         SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM "+TABLE_BLE+" WHERE macs='" + macs + "';");
-        //db.execSQL("DELETE FROM "+TABLE_LOC+" WHERE macs='" + macs + "';");
+        db.execSQL("DELETE FROM "+TABLE_BLE+" WHERE bleName='" + bleName + "';");
+        db.execSQL("DELETE FROM "+TABLE_LOC+" WHERE name='" + bleName + "';");
         db.close();
     }
 }

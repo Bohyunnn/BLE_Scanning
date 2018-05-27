@@ -190,13 +190,7 @@ public class MainActivity extends AppCompatActivity
             //Intent intent = new Intent(this, BLEMapActivity.class);
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
-        }
-//        else if (id == R.id.nav_settingBlue) {
-//            //
-//        } else if (id == R.id.nav_settingGPS) {
-//
-//        }
-        else if (id == R.id.nav_settingBLE) {
+        } else if (id == R.id.nav_settingBLE) {
 
             Intent intent = new Intent(this, BLESettingActivity.class);
             startActivity(intent);
@@ -214,15 +208,8 @@ public class MainActivity extends AppCompatActivity
 //        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
 //
 //        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
+
         myBLEList.addAll(mSQLiteDBHelperDao.getConfigurationsAll());
-
-//        //실험용1
-//        MyBLE a = new MyBLE(R.drawable.dog, "CC:44:63:42:F6:C0", "강아지");
-//        myBLEList.add(a);
-
-//        //실험용2
-//        a = new MyBLE(R.drawable.headphoneicon, null, "이어폰");
-//        myBLEList.add(a);
 
         ProblemConfigurationVo a = new ProblemConfigurationVo( null ,R.drawable.plusicon, null, " ");
         myBLEList.add(a);

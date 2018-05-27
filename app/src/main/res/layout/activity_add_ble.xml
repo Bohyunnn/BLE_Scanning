@@ -49,7 +49,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -72,6 +73,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -141,7 +143,8 @@
             android:id="@+id/addButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/toobar_purple"
+            android:layout_margin="10dp"
+            android:background="@drawable/round_background"
             android:onClick="onAddClick"
             android:text="추가하기" />
     </LinearLayout>
