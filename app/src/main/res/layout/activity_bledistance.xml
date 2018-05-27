@@ -18,17 +18,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
 
-            <ImageView
-                android:id="@+id/imageView11"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="20dp"
-                app:srcCompat="@drawable/iconcircle2" />
+            <!--<ImageView-->
+                <!--android:id="@+id/imageView11"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="200dp"-->
+                <!--android:layout_margin="10dp"-->
+                <!--app:srcCompat="@drawable/iconcircle" />-->
 
-            <ImageView
+            <com.example.hansung.ifindthanq.CircleImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="200dp"
                 android:layout_alignBottom="@+id/imageView11"
                 android:layout_alignParentBottom="false"
                 android:layout_alignParentEnd="false"
@@ -37,8 +37,11 @@
                 android:layout_centerHorizontal="false"
                 android:layout_centerInParent="false"
                 android:layout_centerVertical="false"
+                android:layout_margin="20dp"
                 android:layout_weight="1"
                 android:foregroundGravity="center_vertical|center_horizontal|center"
+                app:civ_border_color="@color/purple_800"
+                app:civ_border_width="4dp"
                 app:srcCompat="@drawable/dog" />
         </RelativeLayout>
 
@@ -103,9 +106,17 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center_vertical|center"
+        android:layout_height="match_parent"
+        android:foregroundGravity="bottom|center_vertical"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="일부 기기는 연결이 안될 수도 있습니다." />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -138,15 +149,4 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <View
-            android:id="@+id/view8"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/toobar_purple" />
-    </LinearLayout>
 </LinearLayout>
