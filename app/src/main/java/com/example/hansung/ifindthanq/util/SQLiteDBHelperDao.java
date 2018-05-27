@@ -240,7 +240,8 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             db.close();
         }
     }
-    //삭제 기능
+
+    //등록된 블루투스 삭제 기능
     public void deleteConfiguration(String macs) {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_BLE+" WHERE macs='" + macs + "';");

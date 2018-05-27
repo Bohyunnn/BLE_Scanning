@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hansung.ifindthanq.BluetoothService;
+import com.example.hansung.ifindthanq.mapBLE.MapLocation;
 import com.example.hansung.ifindthanq.mapBLE.MapsActivity;
 import com.example.hansung.ifindthanq.BLESettingActivity;
 import com.example.hansung.ifindthanq.nearBLE.NearDistanceBLEActivity;
@@ -68,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("IFindThanKQ");
+        actionBar.setTitle("IFindThanQ");
         toolbar.setTitleTextColor(Color.WHITE);
 
         //+버튼 누를 시 작동
@@ -188,11 +190,13 @@ public class MainActivity extends AppCompatActivity
             //Intent intent = new Intent(this, BLEMapActivity.class);
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_settingBlue) {
-            //
-        } else if (id == R.id.nav_settingGPS) {
-
-        } else if (id == R.id.nav_settingBLE) {
+        }
+//        else if (id == R.id.nav_settingBlue) {
+//            //
+//        } else if (id == R.id.nav_settingGPS) {
+//
+//        }
+        else if (id == R.id.nav_settingBLE) {
 
             Intent intent = new Intent(this, BLESettingActivity.class);
             startActivity(intent);
@@ -206,10 +210,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void prepareAlbums() {
-        //등록된 블루투스 DB 가져오기
+
+//        mSQLiteDBHelperDao.getConfigurations(seq); //키값에 따른 데이터 불러오기
+//
+//        mSQLiteDBHelperDao.getAllConfigragtion(); //모든데이터 불러오기
         myBLEList.addAll(mSQLiteDBHelperDao.getConfigurationsAll());
 
-        //plus(+) 버튼
+//        //실험용1
+//        MyBLE a = new MyBLE(R.drawable.dog, "CC:44:63:42:F6:C0", "강아지");
+//        myBLEList.add(a);
+
+//        //실험용2
+//        a = new MyBLE(R.drawable.headphoneicon, null, "이어폰");
+//        myBLEList.add(a);
+
         ProblemConfigurationVo a = new ProblemConfigurationVo( null ,R.drawable.plusicon, null, " ");
         myBLEList.add(a);
 

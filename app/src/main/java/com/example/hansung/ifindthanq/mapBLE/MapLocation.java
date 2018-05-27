@@ -1,7 +1,7 @@
 package com.example.hansung.ifindthanq.mapBLE;
 
 /**
- * Created by kimbohyun on 2018-05-14.
+ * Created by kimsungmin on 2018-05-14.
  */
 
 public class MapLocation {

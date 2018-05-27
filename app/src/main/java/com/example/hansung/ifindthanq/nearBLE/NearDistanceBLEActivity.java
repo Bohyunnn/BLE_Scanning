@@ -41,7 +41,6 @@ public class NearDistanceBLEActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("주변 블루투스 검색 목록");
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         nearBLES = new ArrayList<>();
 

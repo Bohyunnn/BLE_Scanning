@@ -59,12 +59,11 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(true);
-//        actionBar.setTitle("블루투스 등록하기");
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("블루투스 등록하기");
 
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -134,13 +133,13 @@ public class AddBLEActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
 
         //사진이랑 아이콘
-//        intent.putExtra("img", bt);
-//        intent.putExtra("resultIcon", resultIcon);
+        intent.putExtra("img", bt);
+        intent.putExtra("resultIcon", resultIcon);
 //
 //        intent.putExtra(macs, "" + macs);
 
         String name = bleName.getText().toString(); //edittext에서 받아온 bleName 값을 String으로 변환
-//        intent.putExtra("bleName", "" + name);
+        intent.putExtra("bleName", "" + name);
 
         System.out.print("[img] " + bt + "[resultIcon] " + resultIcon + ", [Mac주소] " + macs + ", [등록할 bleName] " + name);
         Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
@@ -163,15 +162,12 @@ public class AddBLEActivity extends AppCompatActivity {
                 problem=new ProblemConfigurationVo(btToString, 0, macs, bleName.getText().toString());
             }
         }
-        //        problem = new ProblemConfigurationVo(null, R.drawable.bluetoothicon, macs, bleName.getText().toString());
-
-
+//        else
 
         //이미지 부재
         mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
 
         startActivity(intent);
-        //finish();
 
         //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
 //        List<MyBLE> myBLEList = null;

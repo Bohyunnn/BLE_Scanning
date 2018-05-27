@@ -2,11 +2,15 @@ package com.example.hansung.ifindthanq;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,80 +18,79 @@ import android.widget.Toast;
 import com.example.hansung.ifindthanq.Main.MainActivity;
 import com.example.hansung.ifindthanq.model.BLE_Setting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //사용자 BLE [검색주기, 거리] 설정
 public class BLESettingActivity extends AppCompatActivity {
-    BLE_Setting ble_setting = new BLE_Setting();
+    private Button settingButton;
+    private TextView meterText;
+    private Spinner spinner;
+    private String meter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blesetting);
 
-//        final String[] scanPeriod = {"10분", "20분", "30분", "1시간", "3시간", "5시간", "10시간"};
-//        final String[] signalStrength = {"10m", "20m", "50m", "100m", "100m초과"};
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("블루투스 거리 설정");
 
-        final Spinner s = (Spinner) findViewById(R.id.spinner);
-        final Spinner s2 = (Spinner) findViewById(R.id.spinner2);
+        meterText = (TextView) findViewById(R.id.meterText);
+        settingButton = (Button) findViewById(R.id.settingButton);
 
-//        final ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, scanPeriod);
-//
-//        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-//        s.setAdapter(adapter);
-//w
-//
-//        ArrayAdapter adapter2 = new ArrayAdapter(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, signalStrength);
-//
-//        adapter2.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-//        s2.setAdapter(adapter2);
-
-        final TextView test1 = (TextView) findViewById(R.id.test1);
-        final TextView test2 = (TextView) findViewById(R.id.test2);
-
-        s.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        //스피너 설정
+        spinner = (Spinner) findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                test1.setText("주기=>  " + s.getSelectedItem().toString());
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                meter = adapterView.getItemAtPosition(i).toString();
+                if (meter != "")
+                    meterText.setText(meter);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
-        s2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ((TextView) parent.getChildAt(0)).setTextColor(Color.BLACK);
-                test2.setText("시간=>  " + s2.getSelectedItem().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //주기랑 시간=> 알맞은 값으로 변환해야함!!!
-        Button SettingButton = (Button) findViewById(R.id.SettingButton);
-        final Intent intent = new Intent(this, MainActivity.class);
-
-        SettingButton.setOnClickListener(new View.OnClickListener() {
+        settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ble_setting.setScanPeriod(5000); //주기 변경
-                ble_setting.setSignalStrength(-75);  //신호 강도 변경
-                Toast.makeText(getApplicationContext(), "[사용자 설정] " +
-                        "[주기=" + ble_setting.getScanPeriod() +
-                        ", 강도= " + ble_setting.getSignalStrength() + " ]", Toast.LENGTH_SHORT).show();
-
-
-                startActivity(intent);
+                Toast.makeText(getApplicationContext(), meter + "로 설정합니다.", Toast.LENGTH_SHORT).show();
+                //sqlite(update)=[meter] 변수 저장
 
             }
         });
 
 
+        //데이터를 저장하게 되는 리스트
+        List<String> spinner_items = new ArrayList<>();
+
+        //스피너와 리스트를 연결하기 위해 사용되는 어댑터
+        ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, spinner_items);
+
+        spinner_items.add("2M이상");
+        spinner_items.add("5M이상");
+        spinner_items.add("10M이상");
+
+        spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //스피너의 어댑터 지정
+        spinner.setAdapter(spinner_adapter);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home: { //toolbar의 back키 눌렀을 때 동작
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -2,7 +2,11 @@ package com.example.hansung.ifindthanq.Main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +21,7 @@ import com.example.hansung.ifindthanq.R;
 
 import com.example.hansung.ifindthanq.util.ProblemConfigurationVo;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -57,7 +62,17 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
         final ProblemConfigurationVo myBLE = myBLEList.get(position);
         holder.bleName.setText(myBLE.getBleName());
 
-        Glide.with(mContext).load(myBLE.getBleImage()).into(holder.bleImage);
+        if(myBLE.getBleImage()!=0){
+            Glide.with(mContext).load(myBLE.getBleImage()).into(holder.bleImage);
+        }else{
+            if(myBLE.getAlbumImage()!=null){
+                byte[] decodedByteArray = Base64.decode(myBLE.getAlbumImage(), Base64.NO_WRAP);
+                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                decodedBitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                Glide.with(mContext).load(stream.toByteArray()).asBitmap().into(holder.bleImage);
+            }
+        }
 
         holder.bleImage.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -73,9 +73,7 @@ public class BLESearchActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("블루투스 등록하기");
-
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("나의 블루투스 등록하기");
 
         //UI
         txtState = (TextView) findViewById(R.id.txtState);
@@ -110,7 +108,6 @@ public class BLESearchActivity extends AppCompatActivity {
 
         //검색된 블루투스 디바이스 데이터
         bluetoothDevices = new ArrayList<>();
-
         //선택한 디바이스 없음
         selectDevice = -1;
 
