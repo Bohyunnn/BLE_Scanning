@@ -59,11 +59,12 @@ public class AddBLEActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_ble);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSQLiteDBHelperDao = new SQLiteDBHelperDao(this);
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("블루투스 등록하기");
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setTitle("블루투스 등록하기");
 
 
         imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -170,7 +171,7 @@ public class AddBLEActivity extends AppCompatActivity {
         mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
 
         startActivity(intent);
-        finish();
+        //finish();
 
         //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
 //        List<MyBLE> myBLEList = null;
