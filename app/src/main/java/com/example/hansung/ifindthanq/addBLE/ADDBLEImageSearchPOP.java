@@ -118,7 +118,7 @@ public class ADDBLEImageSearchPOP extends Activity {
                     }
                     // 썸네일 가져오기
                     Bitmap bm = getThumbNail(returnImg);
-                    Toast.makeText(this, "이미지", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "이미지", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(this, AddBLEActivity.class);
                     intent.putExtra("img", bm);
@@ -137,6 +137,7 @@ public class ADDBLEImageSearchPOP extends Activity {
         intent.putExtra("macs", "" + macs);
         intent.putExtra("name", "" + name);
         startActivity(intent);
+        finish();
     }
 
     //버튼 클릭
@@ -148,14 +149,14 @@ public class ADDBLEImageSearchPOP extends Activity {
 //
 //        //액티비티(팝업) 닫기
 //        finish();
-        Toast.makeText(this, "BLE 등록 누름", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "BLE 등록 누름", Toast.LENGTH_SHORT).show();
     }
 
     //닫기 버튼
     public void onCancel(View v) {
         //액티비티(팝업) 닫기
         finish();
-        Toast.makeText(this, "닫기 누름", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "닫기 누름", Toast.LENGTH_SHORT).show();
     }
 
     //바깥레이어 클릭시 안닫히게

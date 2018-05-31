@@ -62,14 +62,14 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
         final ProblemConfigurationVo myBLE = myBLEList.get(position);
         holder.bleName.setText(myBLE.getBleName());
 
-        if(myBLE.getBleImage()!=0){
+        if (myBLE.getBleImage() != 0) {
             Glide.with(mContext).load(myBLE.getBleImage()).into(holder.bleImage);
-        }else{
-            if(myBLE.getAlbumImage()!=null){
+        } else {
+            if (myBLE.getAlbumImage() != null) {
                 byte[] decodedByteArray = Base64.decode(myBLE.getAlbumImage(), Base64.NO_WRAP);
                 Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedByteArray, 0, decodedByteArray.length);
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                decodedBitmap.compress(Bitmap.CompressFormat.PNG,100,stream);
+                decodedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                 Glide.with(mContext).load(stream.toByteArray()).asBitmap().into(holder.bleImage);
             }
         }
@@ -77,7 +77,8 @@ public class MyBLEAdapter extends RecyclerView.Adapter<MyBLEAdapter.MyViewHolder
         holder.bleImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, myBLE.getBleName() + "을 클릭함", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, myBLE.getBleName() + "을 클릭함", Toast.LENGTH_SHORT).show();
+                Log.v("MYBLEAdapter>>>> ", myBLE.getBleName() + "을 클릭함");
                 if (myBLE.getBleName() == " ") {
                     //BEL 찾기 Activity
                     Intent intent = new Intent(mContext, BLESearchActivity.class);

@@ -71,11 +71,6 @@ public class BluetoothService extends Service {
 
     private SQLiteDBHelperDao mSQLiteDBHelperDao = null;  //객체선언
 
-    private double lat1 = 36.306817;
-    private double lon1 = 127.343497;
-    private double lat2 = 37.52487;
-    private double lon2 = 125.92723;
-
     private double mLatitude = 37.581764;
     private double mLongitude = 127.010326;
 
@@ -134,6 +129,8 @@ public class BluetoothService extends Service {
 
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mReceiver, filter);
+
+            Log.e("meter", String.valueOf(mSQLiteDBHelperDao.getConfigurationsMeter()));
         }
     }
 
@@ -184,25 +181,27 @@ public class BluetoothService extends Service {
 
 
                     if (searchDevice.equals(registerDevice)) {
-                        Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
-                        Log.d("[BS-rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
+//                        Toast.makeText(BluetoothService.this, "[rssi 값 1]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
+//                        Log.d("[BS-rssi 값 1]", "= " + rssi + " 거리는 =" + dist);
+                        System.out.println("[BS-rssi 값 1] >>>>>>>>  " + rssi + " 거리는 =" + dist);
+
+                        int meter = mSQLiteDBHelperDao.getConfigurationsMeter();
+                        System.out.println("BletoothService Meter>>>>>>>>  " + meter);
+                        System.out.println("BletoothService dist>>>>>>>>  " + dist);
 
                         //거리가 0이상이면 알람발생
                         if (dist >= 0) {
                             //Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
 
-                            Log.d("[BS-rssi 값 2]", "= " + rssi + " 거리는 =" + dist);
+                            Log.d("[BS-rssi 값 2]", "= " + rssi + " 거리는 =" + meter);
                             //위치값 찍어주기
                             getLastLocation();
 
                             Log.d("[BS-location 값]", mLatitude + ", " + mLongitude);
                             //          insert location
-//            더미 location data
-//                            MapLocation location1 = new MapLocation("example1", getNowTime(), lat1, lon1);
-//                            MapLocation location2 = new MapLocation("example2", getNowTime(), lat2, lon2);
                             MapLocation location = new MapLocation(problemConfigurationVo.getBleName(), getNowTime(), mLatitude, mLongitude);
 
-//            위치정보 db에 추가
+                            //            위치정보 db에 추가
                             mSQLiteDBHelperDao.addConfigurationLoc(location);
 
                             //토스트 띄우기

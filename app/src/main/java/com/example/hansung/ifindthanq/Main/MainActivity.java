@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -191,11 +192,12 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MapsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_settingBLE) {
-
             Intent intent = new Intent(this, BLESettingActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_contact) {
-
+            String url ="https://github.com/Bohyunnn/BLE_Scanning/blob/master/README.md";
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

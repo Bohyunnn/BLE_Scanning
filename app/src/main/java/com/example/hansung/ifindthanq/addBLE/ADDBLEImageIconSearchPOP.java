@@ -72,13 +72,14 @@ public class ADDBLEImageIconSearchPOP extends Activity implements View.OnClickLi
         intent.putExtra("macs", "" + macs);
         intent.putExtra("name", "" + name);
         startActivity(intent);
+        finish();
     }
 
     //닫기 버튼
     public void onCancel(View v) {
         //액티비티(팝업) 닫기
         finish();
-        Toast.makeText(this, "닫기 누름", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "닫기 누름", Toast.LENGTH_SHORT).show();
     }
 
     //바깥레이어 클릭시 안닫히게

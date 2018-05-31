@@ -39,6 +39,13 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     private static final String KEY_TIME = "time";
     private static final String KEY_NAME = "name";
 
+    // Setting Table name
+    private static final String TABLE_SET = "item_setting";
+
+    // Setting Table Columns names
+    private static final String KEY_SEQ_SET = "seq";
+    private static final String KEY_METER = "meter";
+
     private AtomicInteger openCounter = new AtomicInteger();
 
     public SQLiteDBHelperDao(Context context) {
@@ -49,8 +56,10 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE_BLE = "CREATE TABLE " + TABLE_BLE + "(" + KEY_SEQ + " INTEGER PRIMARY KEY," + KEY_ALBUMIMAGE + " VARCHAR, " + KEY_BLEIMAGE + " INTEGER, " + KEY_MACS + " VARCHAR, " + KEY_BLENAME + " VARCHAR) ";
         String CREATE_TABLE_LOC = "CREATE TABLE " + TABLE_LOC + "(" + KEY_SEQ_LOC + " INTEGER PRIMARY KEY," + KEY_NAME + " VARCHAR, " + KEY_LAT + " VARCHAR, " + KEY_LON + " VARCHAR, " + KEY_TIME + " VARCHAR) ";
+        String CREATE_TABLE_SET = "CREATE TABLE " + TABLE_SET + "(" + KEY_SEQ_SET + " INTEGER PRIMARY KEY," + KEY_METER + " INTEGER) ";
         db.execSQL(CREATE_TABLE_BLE);
         db.execSQL(CREATE_TABLE_LOC);
+        db.execSQL(CREATE_TABLE_SET);
     }
 
     @Override
@@ -58,6 +67,7 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BLE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOC);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SET);
         onCreate(db);
     }
 
@@ -159,6 +169,45 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
         return contactList;
     }
 
+    public int getConfigurationsMeter() {
+        int meter = 0;
+
+        String selectQuery = "SELECT  * FROM " + TABLE_SET;
+
+        SQLiteDatabase db = openDb();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                meter = cursor.getInt(1);
+            } while (cursor.moveToNext());
+        }
+        if (db != null) {
+            closeDb(db);
+        }
+        return meter;
+    }
+
+    public int getConfigurationsMeter(SQLiteDatabase db) {
+        int meter = 0;
+
+        String selectQuery = "SELECT  * FROM " + TABLE_SET;
+
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                meter = cursor.getInt(1);
+            } while (cursor.moveToNext());
+        }
+        if (db != null) {
+            closeDb(db);
+        }
+        return meter;
+    }
+
     public void addConfiguration(ProblemConfigurationVo problemConfigurationVo) {
         SQLiteDatabase db = openDb();
         addConfiguration(db, problemConfigurationVo);
@@ -224,6 +273,32 @@ public class SQLiteDBHelperDao extends SQLiteOpenHelper {
             values.put(KEY_TIME, location.getTime());
 
             db.insert(TABLE_LOC, null, values);
+        }
+    }
+
+    public void addConfigurationMeter(int meter) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addConfigurationMeter(db, meter);
+        closeDb(db);
+    }
+
+    //    미터 데이터 insert, update
+    public void addConfigurationMeter(SQLiteDatabase db, int meter) {
+
+        int meter_store = getConfigurationsMeter(db);
+
+        if (meter_store!=0) {
+            ContentValues values = new ContentValues();
+
+            values.put(KEY_METER, meter);
+
+            db.update(TABLE_SET, values, "seq=?", new String[]{"1"});
+        } else { //데이터를 처음 넣을경우
+            ContentValues values = new ContentValues();
+
+            values.put(KEY_METER, meter);
+
+            db.insert(TABLE_SET, null, values);
         }
     }
 

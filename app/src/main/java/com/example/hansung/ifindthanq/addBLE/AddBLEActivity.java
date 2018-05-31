@@ -100,7 +100,7 @@ public class AddBLEActivity extends AppCompatActivity {
             name = intent.getStringExtra("name");
             if (macs != null) {
                 myBLEMac.setText(macs);
-                Toast.makeText(this, "[" + name + "]", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "[" + name + "]", Toast.LENGTH_SHORT).show();
                 if (name.equals("")) {
                     name = "(지정되지 않음)";
                 }
@@ -116,6 +116,7 @@ public class AddBLEActivity extends AppCompatActivity {
                 intent.putExtra("macs", "" + macs);
                 intent.putExtra("name", "" + name);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -142,7 +143,7 @@ public class AddBLEActivity extends AppCompatActivity {
         intent.putExtra("bleName", "" + name);
 
         System.out.print("[img] " + bt + "[resultIcon] " + resultIcon + ", [Mac주소] " + macs + ", [등록할 bleName] " + name);
-        Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "[img] " + bt + "[resultIcon] " + resultIcon + "[Mac주소] " + macs + ", [등록할 bleName] " + name, Toast.LENGTH_SHORT).show();
 
 //        ProblemConfigurationVo problem=new ProblemConfigurationVo (bt.toString(), Integer.parseInt(resultIcon), macs,  bleName.getText().toString());
         ProblemConfigurationVo problem = null;
@@ -168,6 +169,8 @@ public class AddBLEActivity extends AppCompatActivity {
         mSQLiteDBHelperDao.addConfiguration(problem); //ArrayList 데이터 추가
 
         startActivity(intent);
+
+        finish();
 
         //MYBLE 리스트에 등록해서 MainActivity의 recyclerview에 보여줘야함.
 //        List<MyBLE> myBLEList = null;
