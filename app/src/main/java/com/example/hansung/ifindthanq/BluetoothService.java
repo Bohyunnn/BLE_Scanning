@@ -190,7 +190,7 @@ public class BluetoothService extends Service {
                         System.out.println("BletoothService dist>>>>>>>>  " + dist);
 
                         //거리가 0이상이면 알람발생
-                        if (dist >= 0) {
+                        if (dist >= meter) {
                             //Toast.makeText(BluetoothService.this, "[rssi 값 2]= " + rssi + " 거리는 =" + dist, Toast.LENGTH_LONG).show();
 
                             Log.d("[BS-rssi 값 2]", "= " + rssi + " 거리는 =" + meter);

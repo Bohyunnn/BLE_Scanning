@@ -137,7 +137,6 @@ public class ADDBLEImageSearchPOP extends Activity {
         intent.putExtra("macs", "" + macs);
         intent.putExtra("name", "" + name);
         startActivity(intent);
-        finish();
     }
 
     //버튼 클릭

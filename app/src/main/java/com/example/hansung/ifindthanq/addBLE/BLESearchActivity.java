@@ -246,7 +246,7 @@ public class BLESearchActivity extends AppCompatActivity {
                     break;
                 //블루투스 디바이스 검색 종료
                 case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                    Toast.makeText(BLESearchActivity.this, "블루투스 검색 종료", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(BLESearchActivity.this, "블루투스 검색 종료", Toast.LENGTH_SHORT).show();
                     btnSearch.setEnabled(true);
                     break;
                 //블루투스 디바이스 페어링 상태 변화

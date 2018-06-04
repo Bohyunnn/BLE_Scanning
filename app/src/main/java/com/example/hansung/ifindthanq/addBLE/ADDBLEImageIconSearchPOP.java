@@ -72,7 +72,6 @@ public class ADDBLEImageIconSearchPOP extends Activity implements View.OnClickLi
         intent.putExtra("macs", "" + macs);
         intent.putExtra("name", "" + name);
         startActivity(intent);
-        finish();
     }
 
     //닫기 버튼

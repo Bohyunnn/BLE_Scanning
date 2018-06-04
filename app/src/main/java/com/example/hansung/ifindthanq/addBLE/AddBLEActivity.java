@@ -116,7 +116,7 @@ public class AddBLEActivity extends AppCompatActivity {
                 intent.putExtra("macs", "" + macs);
                 intent.putExtra("name", "" + name);
                 startActivity(intent);
-                finish();
+
             }
         });
 

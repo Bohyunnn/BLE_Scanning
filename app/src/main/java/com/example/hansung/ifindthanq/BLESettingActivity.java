@@ -59,7 +59,11 @@ public class BLESettingActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (adapterView.getItemAtPosition(i).toString().equals("1M이상")) {
+                if (adapterView.getItemAtPosition(i).toString().equals("0M이상")) {
+                    meter = 0;
+                    meterText.setText(adapterView.getItemAtPosition(i).toString());
+                }
+                else if (adapterView.getItemAtPosition(i).toString().equals("1M이상")) {
                     meter = 1;
                     meterText.setText(adapterView.getItemAtPosition(i).toString());
                 } else if (adapterView.getItemAtPosition(i).toString().equals("2M이상")) {
@@ -96,6 +100,7 @@ public class BLESettingActivity extends AppCompatActivity {
         //스피너와 리스트를 연결하기 위해 사용되는 어댑터
         ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, spinner_items);
+        spinner_items.add("0M이상");
         spinner_items.add("1M이상");
         spinner_items.add("2M이상");
         spinner_items.add("5M이상");
